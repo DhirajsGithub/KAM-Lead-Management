@@ -61,6 +61,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
     
+    @ExceptionHandler(DuplicateRelationshipException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateRelationship(DuplicateRelationshipException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+            ex.getMessage(),
+            "Duplicate relationship",
+            HttpStatus.CONFLICT.value()
+        );
+        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+    
     
     
     // Catch other unexpected exceptions

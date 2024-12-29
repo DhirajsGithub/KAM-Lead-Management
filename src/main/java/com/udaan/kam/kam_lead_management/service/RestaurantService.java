@@ -1,9 +1,11 @@
 package com.udaan.kam.kam_lead_management.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.udaan.kam.kam_lead_management.entity.CallSchedule;
@@ -52,12 +54,18 @@ public class RestaurantService {
         return restaurant.orElseThrow(() -> new RestaurantNotFoundException("Restaurant not found with ID: " + id));
     }
 
-    // Get All Restaurants with filters
-    public List<Restaurant> getAllRestaurants(String leadStatus, String city) {
-        if (leadStatus != null && city != null) {
-            return restaurantRepository.findByLeadStatusAndCity(leadStatus, city);
-        }
-        return restaurantRepository.findAll();
+//    // Get All Restaurants with filters
+//    public List<Restaurant> getAllRestaurants(String leadStatus, String city) {
+//        if (leadStatus != null && city != null) {
+//            return restaurantRepository.findByLeadStatusAndCity(leadStatus, city);
+//        }
+//        return restaurantRepository.findAll();
+//    }
+    
+    // Get Filtered Resturant base on leadStatus, city, search and page
+    public Page<Restaurant> getFilteredRestaurants(Restaurant.LeadStatus leadStatus, String city, String search, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return restaurantRepository.findByFiltersAndSearch(leadStatus, city, search, pageable);
     }
 
     // Update a Restaurant

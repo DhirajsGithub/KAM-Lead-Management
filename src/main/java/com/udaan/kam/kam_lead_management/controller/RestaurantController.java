@@ -1,9 +1,9 @@
 package com.udaan.kam.kam_lead_management.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,10 +54,13 @@ public class RestaurantController {
 
     // Get All Restaurants
     @GetMapping
-    public ResponseEntity<List<Restaurant>> getAllRestaurants(
-            @RequestParam(required = false) String leadStatus,
-            @RequestParam(required = false) String city) {
-        List<Restaurant> restaurants = restaurantService.getAllRestaurants(leadStatus, city);
+    public ResponseEntity<Page<Restaurant>> getRestaurants(
+            @RequestParam(required = false) Restaurant.LeadStatus leadStatus,
+            @RequestParam(required = false) String city,
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Page<Restaurant> restaurants = restaurantService.getFilteredRestaurants(leadStatus, city, search, page, size);
         return ResponseEntity.ok(restaurants);
     }
 

@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -90,10 +90,24 @@ public class Restaurant {
     private Contact primaryContact;
     
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference 
+//    @JsonManagedReference 
     private List<Contact> contacts = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("restaurant")
+    private List<RestaurantUser> restaurantUsers = new ArrayList<>();
 
-    @ManyToOne
+
+
+    public List<RestaurantUser> getRestaurantUsers() {
+		return restaurantUsers;
+	}
+
+	public void setRestaurantUsers(List<RestaurantUser> restaurantUsers) {
+		this.restaurantUsers = restaurantUsers;
+	}
+
+	@ManyToOne
     @JoinColumn(name = "latest_interaction_id")
     private Interaction latestInteraction;
 

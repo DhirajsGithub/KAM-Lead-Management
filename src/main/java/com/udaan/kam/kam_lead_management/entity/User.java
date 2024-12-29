@@ -1,15 +1,22 @@
 package com.udaan.kam.kam_lead_management.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -65,8 +72,22 @@ public class User {
 
     @Column(name = "is_active", nullable = false)
     private Boolean isActive = true;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
+    private List<RestaurantUser> restaurantUsers = new ArrayList<>();
 
-    // Default Constructor (Required by JPA)
+
+
+    public List<RestaurantUser> getRestaurantUsers() {
+		return restaurantUsers;
+	}
+
+	public void setRestaurantUsers(List<RestaurantUser> restaurantUsers) {
+		this.restaurantUsers = restaurantUsers;
+	}
+
+	// Default Constructor (Required by JPA)
     public User() {}
 
     // Constructor for mandatory fields

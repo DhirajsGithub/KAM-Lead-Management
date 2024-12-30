@@ -62,4 +62,10 @@ public class RestaurantUserService {
         Optional<RestaurantUser> restaurantUser = restaurantUserRepository.findByRestaurantIdAndUserId(restaurantId, userId);
         restaurantUser.ifPresent(restaurantUserRepository::delete);
     }
+
+
+
+    public boolean isRestaurantAssignedToUser(Integer restaurantId, Integer userId) {
+        return restaurantUserRepository.existsByRestaurantIdAndUserId(restaurantId, userId);
+    }
 }

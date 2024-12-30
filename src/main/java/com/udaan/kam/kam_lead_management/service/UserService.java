@@ -44,7 +44,7 @@ public class UserService {
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
-            user.setPasswordHash(updatedUser.getPasswordHash());
+            user.setPassword(updatedUser.getPassword());
             user.setFirstName(updatedUser.getFirstName());
             user.setLastName(updatedUser.getLastName());
             user.setRole(updatedUser.getRole());
@@ -59,6 +59,10 @@ public class UserService {
             throw new UserNotFoundException("User not found with ID: " + id);
         }
         userRepository.deleteById(id);
+    }
+    
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }
 

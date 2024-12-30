@@ -47,10 +47,10 @@ public class User {
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @NotBlank(message = "Password hash cannot be blank")
-    @Size(max = 255, message = "Password hash must not exceed 255 characters")
-    @Column(name = "password_hash", nullable = false, length = 255)
-    private String passwordHash;
+    @NotBlank(message = "Password cannot be blank")
+    @Size(max = 255, message = "Password must not exceed 255 characters")
+    @Column(name = "password", nullable = false, length = 255)
+    private String password;
 
     @NotBlank(message = "First name cannot be blank")
     @Size(max = 50, message = "First name must not exceed 50 characters")
@@ -91,10 +91,10 @@ public class User {
     public User() {}
 
     // Constructor for mandatory fields
-    public User(String username, String email, String passwordHash, String firstName, String lastName, Role role) {
+    public User(String username, String email, String password, String firstName, String lastName, Role role) {
         this.username = username;
         this.email = email;
-        this.passwordHash = passwordHash;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
@@ -125,12 +125,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFirstName() {

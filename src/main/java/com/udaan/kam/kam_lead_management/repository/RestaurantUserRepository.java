@@ -11,5 +11,7 @@ public interface RestaurantUserRepository extends JpaRepository<RestaurantUser, 
     List<RestaurantUser> findByRestaurantId(Integer restaurantId);
     List<RestaurantUser> findByUserId(Integer userId);
     Optional<RestaurantUser> findByRestaurantIdAndUserId(Integer restaurantId, Integer userId);
+    boolean existsByRestaurantIdAndUserId(Integer restaurantId, Integer userId);
+    
     
 }

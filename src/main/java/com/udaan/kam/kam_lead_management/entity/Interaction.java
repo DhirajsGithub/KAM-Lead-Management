@@ -2,6 +2,10 @@ package com.udaan.kam.kam_lead_management.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,15 +37,17 @@ public class Interaction {
     @NotNull(message = "Restaurant cannot be null")
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonIgnore
     private Restaurant restaurant;
 
     @ManyToOne
     @JoinColumn(name = "contact_id")
+    @JsonIgnore
     private Contact contact;
 
-    @NotNull(message = "User cannot be null")
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @NotNull(message = "Interaction type cannot be null")

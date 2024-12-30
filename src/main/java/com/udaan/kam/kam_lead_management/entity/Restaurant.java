@@ -100,10 +100,33 @@ public class Restaurant {
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("restaurant")
     private List<CallSchedule> callSchedules = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("restaurant")
+    private List<Interaction> interactions = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("restaurant")
+    private List<Order> orders = new ArrayList<>();
+    
 
+    public List<Order> getOrders() {
+		return orders;
+	}
 
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
 
-    public List<RestaurantUser> getRestaurantUsers() {
+	public List<Interaction> getInteractions() {
+		return interactions;
+	}
+
+	public void setInteractions(List<Interaction> interactions) {
+		this.interactions = interactions;
+	}
+
+	public List<RestaurantUser> getRestaurantUsers() {
 		return restaurantUsers;
 	}
 

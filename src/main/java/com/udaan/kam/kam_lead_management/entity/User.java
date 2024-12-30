@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -76,10 +77,20 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("user")
     private List<RestaurantUser> restaurantUsers = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
+    private List<Interaction> interactions = new ArrayList<>();
 
+    public List<Interaction> getInteractions() {
+		return interactions;
+	}
 
+	public void setInteractions(List<Interaction> interactions) {
+		this.interactions = interactions;
+	}
 
-    public List<RestaurantUser> getRestaurantUsers() {
+	public List<RestaurantUser> getRestaurantUsers() {
 		return restaurantUsers;
 	}
 

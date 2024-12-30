@@ -1,6 +1,7 @@
 package com.udaan.kam.kam_lead_management.entity;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -28,6 +29,9 @@ public class CallSchedule {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "schedule_id")
     private Integer id;
+    
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
 
     @NotNull(message = "Restaurant cannot be null")
     @ManyToOne
@@ -96,16 +100,17 @@ public class CallSchedule {
         return lastCallDate;
     }
 
-    public void setLastCallDate(LocalDateTime lastCallDate) {
-        this.lastCallDate = lastCallDate;
-    }
-
     public LocalDateTime getNextCallDate() {
         return nextCallDate;
     }
 
-    public void setNextCallDate(LocalDateTime nextCallDate) {
-        this.nextCallDate = nextCallDate;
+
+    public void setLastCallDate(String lastCallDate) {
+        this.lastCallDate = LocalDateTime.parse(lastCallDate , DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    public void setNextCallDate(String nextCallDate) {
+        this.nextCallDate = LocalDateTime.parse(nextCallDate, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public Integer getPriorityLevel() {

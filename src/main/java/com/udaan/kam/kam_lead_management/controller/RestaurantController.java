@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udaan.kam.kam_lead_management.entity.CallSchedule;
 import com.udaan.kam.kam_lead_management.entity.Contact;
 import com.udaan.kam.kam_lead_management.entity.Restaurant;
 import com.udaan.kam.kam_lead_management.exception.UnauthorizedAccessException;
 import com.udaan.kam.kam_lead_management.security.UserDetailsImpl;
+import com.udaan.kam.kam_lead_management.service.CallScheduleService;
 import com.udaan.kam.kam_lead_management.service.ContactService;
 import com.udaan.kam.kam_lead_management.service.RestaurantService;
 
@@ -35,6 +37,9 @@ public class RestaurantController {
     
     @Autowired
     private ContactService contactService;
+    
+    @Autowired
+    private CallScheduleService callScheduleService;
 
     // Create a new Restaurant (Admin only)
     @PostMapping
@@ -47,14 +52,17 @@ public class RestaurantController {
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> getRestaurantById(@PathVariable Integer id,
                                                         @AuthenticationPrincipal UserDetails currentUser) {
-        Integer userId = Integer.parseInt(currentUser.getUsername()); // Assuming username is userId
+    	 UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;  
+    	 Integer userId = userDetailsImpl.getUserId(); 
         Restaurant restaurant = restaurantService.getRestaurantById(id);
 
         // Check if the user is an admin or assigned to this restaurant
         if (restaurantService.isUserAdmin(userId) || restaurantService.isUserAssignedToRestaurant(userId, id)) {
             // Fetch the contacts associated with the Restaurant
-            List<Contact> contacts = contactService.getContactsByRestaurantId(id);
-            restaurant.setContacts(contacts);  // Associate contacts with the restaurant
+            List<Contact> contacts = contactService.getContactsByRestaurantId(id, userId);
+            List<CallSchedule> callSchedules = callScheduleService.getCallSchedulesByRestaurantId(id, userId);
+            restaurant.setCallSchedules(callSchedules);
+            restaurant.setContacts(contacts);  
 
             return ResponseEntity.ok(restaurant);
         } else {

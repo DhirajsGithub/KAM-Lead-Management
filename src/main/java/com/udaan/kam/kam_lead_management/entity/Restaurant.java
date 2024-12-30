@@ -90,12 +90,16 @@ public class Restaurant {
     private Contact primaryContact;
     
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference 
+    @JsonIgnoreProperties("restaurant")
     private List<Contact> contacts = new ArrayList<>();
     
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("restaurant")
     private List<RestaurantUser> restaurantUsers = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("restaurant")
+    private List<CallSchedule> callSchedules = new ArrayList<>();
 
 
 
@@ -105,6 +109,14 @@ public class Restaurant {
 
 	public void setRestaurantUsers(List<RestaurantUser> restaurantUsers) {
 		this.restaurantUsers = restaurantUsers;
+	}
+
+	public List<CallSchedule> getCallSchedules() {
+		return callSchedules;
+	}
+
+	public void setCallSchedules(List<CallSchedule> callSchedules) {
+		this.callSchedules = callSchedules;
 	}
 
 	@ManyToOne

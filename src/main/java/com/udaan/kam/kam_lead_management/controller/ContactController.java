@@ -5,20 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import com.udaan.kam.kam_lead_management.entity.Contact;
-import com.udaan.kam.kam_lead_management.entity.Restaurant;
-import com.udaan.kam.kam_lead_management.exception.ContactNotFoundException;
-import com.udaan.kam.kam_lead_management.repository.RestaurantRepository;
 import com.udaan.kam.kam_lead_management.service.ContactService;
+import com.udaan.kam.kam_lead_management.security.UserDetailsImpl;
 
 @RestController
 @RequestMapping("/api/contacts")
@@ -26,47 +18,47 @@ public class ContactController {
 
     @Autowired
     private ContactService contactService;
-    
-    @Autowired
-    private RestaurantRepository restaurantRepository;
 
-
-    @PostMapping
-    public ResponseEntity<Contact> createContact(@RequestBody Contact contact) {
-        // Find the restaurant by ID
-        Restaurant restaurant = restaurantRepository.findById(contact.getRestaurant().getId())
-                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
-
-        // Set the found restaurant to the contact
-        contact.setRestaurant(restaurant);
-
-        // Save the contact
-        Contact createdContact = contactService.createContact(contact);
-
+    // Create a new Contact for a specific Restaurant
+    @PostMapping("/{restaurantId}")
+    public ResponseEntity<Contact> createContact(
+            @PathVariable Integer restaurantId,
+            @RequestBody Contact contact,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        Integer userId = currentUser.getUserId(); // Get the logged-in user ID
+        Contact createdContact = contactService.createContact(contact, restaurantId, userId);
         return new ResponseEntity<>(createdContact, HttpStatus.CREATED);
     }
 
-    // API to get all Contacts
-    @GetMapping
-    public List<Contact> getAllContacts() {
-        return contactService.getAllContacts();
+    // Get all Contacts for a specific Restaurant
+    @GetMapping("/{restaurantId}")
+    public List<Contact> getContactsByRestaurantId(
+            @PathVariable Integer restaurantId,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        Integer userId = currentUser.getUserId(); // Get the logged-in user ID
+        return contactService.getContactsByRestaurantId(restaurantId, userId);
     }
 
-    // API to get a Contact by ID
-    @GetMapping("/{id}")
-    public Contact getContactById(@PathVariable Integer id) {
-        return contactService.getContactById(id).orElseThrow(() -> new ContactNotFoundException("Contact not found with ID: " + id));
+    // Update Contact by ID for a specific Restaurant
+    @PutMapping("/{restaurantId}/{contactId}")
+    public ResponseEntity<Contact> updateContact(
+            @PathVariable Integer restaurantId,
+            @PathVariable Integer contactId,
+            @RequestBody Contact updatedContact,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        Integer userId = currentUser.getUserId(); // Get the logged-in user ID
+        Contact updated = contactService.updateContact(contactId, updatedContact, restaurantId, userId);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
     }
 
-    // API to update a Contact by ID
-    @PutMapping("/{id}")
-    public Contact updateContact(@PathVariable Integer id, @RequestBody Contact updatedContact) {
-        return contactService.updateContact(id, updatedContact);
-    }
-
-    // API to delete a Contact by ID
-    @DeleteMapping("/{id}")
-    public void deleteContact(@PathVariable Integer id) {
-        contactService.deleteContact(id);
+    // Delete Contact by ID for a specific Restaurant
+    @DeleteMapping("/{restaurantId}/{contactId}")
+    public ResponseEntity<Void> deleteContact(
+            @PathVariable Integer restaurantId,
+            @PathVariable Integer contactId,
+            @AuthenticationPrincipal UserDetailsImpl currentUser) {
+        Integer userId = currentUser.getUserId(); // Get the logged-in user ID
+        contactService.deleteContact(contactId, restaurantId, userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

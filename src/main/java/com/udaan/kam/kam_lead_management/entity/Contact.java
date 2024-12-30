@@ -48,6 +48,7 @@ public class Contact {
     private String lastName;
 
     @Size(max = 50, message = "Role must not exceed 50 characters")
+    @NotNull(message = "Role cannot be null")
     @Column(name = "role", length = 50)
     private String role;
 

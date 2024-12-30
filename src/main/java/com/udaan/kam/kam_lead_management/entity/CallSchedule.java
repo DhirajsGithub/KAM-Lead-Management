@@ -2,6 +2,8 @@ package com.udaan.kam.kam_lead_management.entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,7 +32,9 @@ public class CallSchedule {
     @NotNull(message = "Restaurant cannot be null")
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonBackReference
     private Restaurant restaurant;
+    
 
     @NotNull(message = "Frequency in days is required")
     @Min(value = 1, message = "Frequency must be at least 1 day")

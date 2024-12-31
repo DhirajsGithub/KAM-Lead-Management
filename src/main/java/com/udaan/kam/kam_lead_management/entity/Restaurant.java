@@ -18,8 +18,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Digits;
@@ -47,19 +45,23 @@ public class Restaurant {
     private String name;
 
     @Size(max = 255, message = "Address must not exceed 255 characters")
+    @NotBlank(message = "Address cannot be blank")
     @Column(name = "address", columnDefinition = "TEXT")
     private String address;
 
     @Size(max = 50, message = "City name must not exceed 50 characters")
     @Column(name = "city", length = 50)
+    @NotBlank(message = "City cannot be blank")
     private String city;
 
     @Size(max = 50, message = "State name must not exceed 50 characters")
     @Column(name = "state", length = 50)
+    @NotBlank(message = "State cannot be blank")
     private String state;
 
     @Pattern(regexp = "^(\\+\\d{1,3}[- ]?)?\\d{10}$", message = "Invalid phone number")
     @Column(name = "phone", length = 20)
+    @NotBlank(message = "Phone number cannot be blank")
     private String phone;
 
     @Email(message = "Invalid email format")
@@ -76,18 +78,15 @@ public class Restaurant {
     @NotNull(message = "Lead status cannot be null")
     private LeadStatus leadStatus = LeadStatus.NEW;
 
+    @NotNull(message = "Annual Revenue cannot be null")
     @Digits(integer = 15, fraction = 2, message = "Annual revenue must be a valid decimal value")
     @Column(name = "annual_revenue", precision = 15, scale = 2)
     private BigDecimal annualRevenue;
 
     @Size(max = 50, message = "Timezone must not exceed 50 characters")
     @Column(name = "timezone", length = 50)
-    private String timezone;
+    private String timezone = "GMT+5:30";
 
-    // Relationships
-    @ManyToOne
-    @JoinColumn(name = "primary_contact_id")
-    private Contact primaryContact;
     
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("restaurant")
@@ -142,27 +141,9 @@ public class Restaurant {
 		this.callSchedules = callSchedules;
 	}
 
-	@ManyToOne
-    @JoinColumn(name = "latest_interaction_id")
-    private Interaction latestInteraction;
-
-    @ManyToOne
-    @JoinColumn(name = "latest_order_id")
-    private Order latestOrder;
-
-    @ManyToOne
-    @JoinColumn(name = "current_schedule_id")
-    private CallSchedule currentSchedule;
-
-    @ManyToOne
-    @JoinColumn(name = "latest_metric_id")
-    private PerformanceMetric latestMetric;
-
-    // Default Constructor (Required by JPA)
     public Restaurant() {}
 
-    // Constructor for mandatory fields
-    public Restaurant(String name, String address, String city, String state, String phone, String email, LeadStatus leadStatus) {
+    public Restaurant(String name, String address, String city, String state, String phone, String email, LeadStatus leadStatus, BigDecimal annualRevenue) {
         this.name = name;
         this.address = address;
         this.city = city;
@@ -170,9 +151,9 @@ public class Restaurant {
         this.phone = phone;
         this.email = email;
         this.leadStatus = leadStatus;
+        this.annualRevenue = annualRevenue;
     }
 
-    // Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -261,13 +242,6 @@ public class Restaurant {
         this.timezone = timezone;
     }
 
-    public Contact getPrimaryContact() {
-        return primaryContact;
-    }
-
-    public void setPrimaryContact(Contact primaryContact) {
-        this.primaryContact = primaryContact;
-    }
     public List<Contact> getContacts() {
         return contacts;
     }
@@ -276,39 +250,6 @@ public class Restaurant {
         this.contacts = contacts;
     }
 
-    public Interaction getLatestInteraction() {
-        return latestInteraction;
-    }
-
-    public void setLatestInteraction(Interaction latestInteraction) {
-        this.latestInteraction = latestInteraction;
-    }
-
-    public Order getLatestOrder() {
-        return latestOrder;
-    }
-
-    public void setLatestOrder(Order latestOrder) {
-        this.latestOrder = latestOrder;
-    }
-
-    public CallSchedule getCurrentSchedule() {
-        return currentSchedule;
-    }
-
-    public void setCurrentSchedule(CallSchedule currentSchedule) {
-        this.currentSchedule = currentSchedule;
-    }
-
-    public PerformanceMetric getLatestMetric() {
-        return latestMetric;
-    }
-
-    public void setLatestMetric(PerformanceMetric latestMetric) {
-        this.latestMetric = latestMetric;
-    }
-
-    // Enum for LeadStatus
     public enum LeadStatus {
         NEW, CONTACTED, QUALIFIED, NEGOTIATING, CONVERTED, LOST
     }

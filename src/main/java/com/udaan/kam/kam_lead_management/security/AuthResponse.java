@@ -1,4 +1,4 @@
-package com.udaan.kam.kam_lead_management.DTO;
+package com.udaan.kam.kam_lead_management.security;
 
 public class AuthResponse {
     private String token;

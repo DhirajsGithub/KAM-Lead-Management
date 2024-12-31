@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -110,10 +109,8 @@ public class User {
 		this.restaurantUsers = restaurantUsers;
 	}
 
-	// Default Constructor (Required by JPA)
     public User() {}
 
-    // Constructor for mandatory fields
     public User(String username, String email, String password, String firstName, String lastName, Role role) {
         this.username = username;
         this.email = email;
@@ -123,7 +120,6 @@ public class User {
         this.role = role;
     }
 
-    // Getters and Setters
     public Integer getId() {
         return id;
     }
@@ -196,7 +192,6 @@ public class User {
         this.isActive = isActive;
     }
 
-    // Enum for Role
     public enum Role {
         MANAGER, ADMIN
     }

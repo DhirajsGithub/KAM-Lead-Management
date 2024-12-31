@@ -1,11 +1,13 @@
 package com.udaan.kam.kam_lead_management.service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.udaan.kam.kam_lead_management.DTO.UserDetailDTO;
+import com.udaan.kam.kam_lead_management.DTO.UserListDTO;
 import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.exception.BadRequestException;
 import com.udaan.kam.kam_lead_management.exception.UserNotFoundException;
@@ -18,25 +20,34 @@ public class UserService {
     private UserRepository userRepository;
 
     // Create a new User
-    public User createUser(User user) {
+    public UserDetailDTO createUser(User user) {
         if (user.getUsername() == null || user.getUsername().isEmpty()) {
             throw new BadRequestException("Username is required.");
         }
-        return userRepository.save(user);
+        userRepository.save(user);
+        return UserDetailDTOFunc(user);
     }
 
     // Get all Users
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<UserListDTO> getAllUsersAsDTO() {
+        return userRepository.findAll().stream()
+            .map(user -> new UserListDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRole().toString(),
+                user.getIsActive()
+            ))
+            .collect(Collectors.toList());
     }
 
     // Get User by ID
-    public Optional<User> getUserById(Integer id) {
-        Optional<User> user = userRepository.findById(id);
-        if (!user.isPresent()) {
-            throw new UserNotFoundException("User not found with ID: " + id);
-        }
-        return user;
+    public UserDetailDTO getUserDetailsById(Integer id) {
+    	 User user = userRepository.findById(id)
+                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+       return UserDetailDTOFunc(user);
     }
 
     // Update User by ID
@@ -61,8 +72,28 @@ public class UserService {
         userRepository.deleteById(id);
     }
     
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    // Get current User base on JWT token
+    public UserDetailDTO findByUsername(String username) {
+    	User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("Current User not found"));
+      return UserDetailDTOFunc(user);
+    	
+    }
+    
+    private UserDetailDTO UserDetailDTOFunc(User user){
+    	return new UserDetailDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getRole().toString(),
+                user.getCreatedAt(),
+                user.getIsActive(),
+                user.getRestaurantUsers(),
+                user.getInteractions(),
+                user.getPerformanceMetrices()
+        );
     }
 }
 

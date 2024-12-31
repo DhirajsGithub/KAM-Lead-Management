@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udaan.kam.kam_lead_management.DTO.RestaurantDTO;
 import com.udaan.kam.kam_lead_management.entity.CallSchedule;
 import com.udaan.kam.kam_lead_management.entity.Contact;
 import com.udaan.kam.kam_lead_management.entity.Restaurant;
@@ -25,6 +26,7 @@ import com.udaan.kam.kam_lead_management.security.UserDetailsImpl;
 import com.udaan.kam.kam_lead_management.service.CallScheduleService;
 import com.udaan.kam.kam_lead_management.service.ContactService;
 import com.udaan.kam.kam_lead_management.service.RestaurantService;
+import com.udaan.kam.kam_lead_management.util.PermissionUtils;
 
 import jakarta.validation.Valid;
 
@@ -32,87 +34,85 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/restaurant")
 public class RestaurantController {
 
-    @Autowired
-    private RestaurantService restaurantService;
-    
-    @Autowired
-    private ContactService contactService;
-    
-    @Autowired
-    private CallScheduleService callScheduleService;
+	@Autowired
+	private RestaurantService restaurantService;
 
-    // Create a new Restaurant (Admin only)
-    @PostMapping
-    public ResponseEntity<Restaurant> createRestaurant(@Valid @RequestBody Restaurant restaurant) {
-        Restaurant createdRestaurant = restaurantService.createRestaurant(restaurant);
-        return ResponseEntity.ok(createdRestaurant);
-    }
+	@Autowired
+	private ContactService contactService;
 
-    // Get Restaurant by ID (Accessible to Admin or Manager assigned to the restaurant)
-    @GetMapping("/{id}")
-    public ResponseEntity<Restaurant> getRestaurantById(@PathVariable Integer id,
-                                                        @AuthenticationPrincipal UserDetails currentUser) {
-    	 UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;  
-    	 Integer userId = userDetailsImpl.getUserId(); 
-        Restaurant restaurant = restaurantService.getRestaurantById(id);
+	@Autowired
+	private CallScheduleService callScheduleService;
 
-        // Check if the user is an admin or assigned to this restaurant
-        if (restaurantService.isUserAdmin(userId) || restaurantService.isUserAssignedToRestaurant(userId, id)) {
-            // Fetch the contacts associated with the Restaurant
-            List<Contact> contacts = contactService.getContactsByRestaurantId(id, userId);
-            List<CallSchedule> callSchedules = callScheduleService.getCallSchedulesByRestaurantId(id, userId);
-            restaurant.setCallSchedules(callSchedules);
-            restaurant.setContacts(contacts);  
+	@Autowired
+	private PermissionUtils permissionUtils;
 
-            return ResponseEntity.ok(restaurant);
-        } else {
-            throw new UnauthorizedAccessException("You are not authorized to access this restaurant.");
-        }
-    }
+	@PostMapping
+	// Create a Restaurant
+	public ResponseEntity<RestaurantDTO> createRestaurant(@Valid @RequestBody Restaurant restaurant) {
+		RestaurantDTO createdRestaurant = restaurantService.createRestaurant(restaurant);
+		return ResponseEntity.ok(createdRestaurant);
+	}
 
-    // Get All Restaurants (Admin can see all, Managers can only see assigned ones)
-    @GetMapping
-    public ResponseEntity<Page<Restaurant>> getRestaurants(@RequestParam(required = false) Restaurant.LeadStatus leadStatus,
-                                                            @RequestParam(required = false) String city,
-                                                            @RequestParam(required = false) String search,
-                                                            @RequestParam(defaultValue = "0") int page,
-                                                            @RequestParam(defaultValue = "10") int size,
-                                                            @AuthenticationPrincipal UserDetails currentUser) {
-    	 UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;  // Casting to your custom implementation
-    	 Integer userId = userDetailsImpl.getUserId(); 
-    		System.out.println("userId "+restaurantService.isUserAdmin(userId));
-        if (restaurantService.isUserAdmin(userId)) {
-            // Admin can access all restaurants
-        
-            Page<Restaurant> restaurants = restaurantService.getFilteredRestaurants(leadStatus, city, search, page, size);
-            return ResponseEntity.ok(restaurants);
-        } else {
-            // Managers can only see assigned restaurants
-            Page<Restaurant> restaurants = restaurantService.getAssignedRestaurants(userId, leadStatus, city, search, page, size);
-            return ResponseEntity.ok(restaurants);
-        }
-    }
+	@GetMapping("/{restaurant_id}")
+	public ResponseEntity<Restaurant> getRestaurantById(@PathVariable Integer restaurant_id,
+			@AuthenticationPrincipal UserDetails currentUser) {
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;
+		Integer userId = userDetailsImpl.getUserId();
+		Restaurant restaurant = restaurantService.getRestaurantById(restaurant_id);
 
-    // Update a Restaurant (Manager can only update assigned, Admin can update any)
-    @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> updateRestaurant(@PathVariable Integer id,
-                                                       @Valid @RequestBody Restaurant restaurant,
-                                                       @AuthenticationPrincipal UserDetails currentUser) {
-    	 UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;  // Casting to your custom implementation
-    	 Integer userId = userDetailsImpl.getUserId(); 
-        Restaurant updatedRestaurant = restaurantService.updateRestaurant(userId, id, restaurant);
-        return ResponseEntity.ok(updatedRestaurant);
-    }
+		if (permissionUtils.isAdminOrAssignedManager(userId, restaurant_id)) {
+			List<Contact> contacts = contactService.getContactsByRestaurantId(restaurant_id, userId);
+			List<CallSchedule> callSchedules = callScheduleService.getCallSchedulesByRestaurantId(restaurant_id, userId);
+			restaurant.setCallSchedules(callSchedules);
+			restaurant.setContacts(contacts);
 
-    // Delete a Restaurant (Manager can only delete assigned, Admin can delete any)
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRestaurant(@PathVariable Integer id,
-                                                 @AuthenticationPrincipal UserDetails currentUser) {
-    	 UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;  // Casting to your custom implementation
-    	 Integer userId = userDetailsImpl.getUserId(); 
-        restaurantService.deleteRestaurant(userId, id);
-        return ResponseEntity.noContent().build();
-    }
+			return ResponseEntity.ok(restaurant);
+		} else {
+			throw new UnauthorizedAccessException("You are not authorized to access this restaurant.");
+		}
+	}
 
+	// Get All Restaurants (Admin can see all, Managers can only see assigned ones)
+	@GetMapping
+	public ResponseEntity<Page<RestaurantDTO>> getRestaurants(
+	        @RequestParam(required = false) Restaurant.LeadStatus leadStatus,
+	        @RequestParam(required = false) String city,
+	        @RequestParam(required = false) String search,
+	        @RequestParam(defaultValue = "0") int page,
+	        @RequestParam(defaultValue = "10") int size,
+	        @AuthenticationPrincipal UserDetails currentUser) {
+	    
+	    UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;
+	    Integer userId = userDetailsImpl.getUserId();
+	    
+	    Page<RestaurantDTO> restaurants;
+	    if (permissionUtils.isAdmin(userId)) {
+	        restaurants = restaurantService.getFilteredRestaurants(leadStatus, city, search, page, size);
+	    } else {
+	        restaurants = restaurantService.getAssignedRestaurants(userId, leadStatus, city, search, page, size);
+	    }
+	    
+	    return ResponseEntity.ok(restaurants);
+	}
+
+	@PutMapping("/{restaurant_id}")
+	// Update a Restaurants (Admin or assigned Managers)
+	public ResponseEntity<RestaurantDTO> updateRestaurant(@PathVariable Integer restaurant_id,
+			@Valid @RequestBody Restaurant restaurant, @AuthenticationPrincipal UserDetails currentUser) {
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;
+		Integer userId = userDetailsImpl.getUserId();
+		RestaurantDTO updatedRestaurant = restaurantService.updateRestaurant(userId, restaurant_id, restaurant);
+		return ResponseEntity.ok(updatedRestaurant);
+	}
+
+	// Delete a Restaurants (Admin or assigned Managers)
+	@DeleteMapping("/{restaurant_id}")
+	public ResponseEntity<Void> deleteRestaurant(@PathVariable Integer restaurant_id,
+			@AuthenticationPrincipal UserDetails currentUser) {
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;
+		Integer userId = userDetailsImpl.getUserId();
+		restaurantService.deleteRestaurant(userId, restaurant_id);
+		return ResponseEntity.noContent().build();
+	}
 
 }

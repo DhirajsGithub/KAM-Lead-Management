@@ -20,10 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.udaan.kam.kam_lead_management.DTO.AuthRequest;
-import com.udaan.kam.kam_lead_management.DTO.AuthResponse;
+import com.udaan.kam.kam_lead_management.DTO.UserDetailDTO;
+import com.udaan.kam.kam_lead_management.DTO.UserListDTO;
 import com.udaan.kam.kam_lead_management.entity.User;
-import com.udaan.kam.kam_lead_management.exception.UserNotFoundException;
+import com.udaan.kam.kam_lead_management.security.AuthRequest;
+import com.udaan.kam.kam_lead_management.security.AuthResponse;
 import com.udaan.kam.kam_lead_management.security.JwtService;
 import com.udaan.kam.kam_lead_management.service.UserService;
 
@@ -46,7 +47,6 @@ public class UserController {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    // Modified login endpoint to use UserDetails
     @PostMapping("/auth/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
         Authentication authentication = authenticationManager.authenticate(
@@ -62,23 +62,22 @@ public class UserController {
         throw new UsernameNotFoundException("Invalid user credentials!");
     }
 
-    // Rest of your controller methods remain the same...
     @PostMapping("/auth/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
+    public ResponseEntity<UserDetailDTO> register(@RequestBody User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User createdUser = userService.createUser(user);
+        UserDetailDTO createdUser = userService.createUser(user);
+        
         return ResponseEntity.ok(createdUser);
     }
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
+    public List<UserListDTO> getAllUsers() {
+        return userService.getAllUsersAsDTO();
     }
 
     @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable Integer id) {
-        return userService.getUserById(id)
-                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+    public ResponseEntity<UserDetailDTO> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(userService.getUserDetailsById(id));
     }
 
     @PutMapping("/users/{id}")
@@ -96,11 +95,9 @@ public class UserController {
     }
 
     @GetMapping("/users/current")
-    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
+    public ResponseEntity<UserDetailDTO> getCurrentUser(Authentication authentication) {
         if (authentication != null) {
-            User user = userService.findByUsername(authentication.getName())
-                .orElseThrow(() -> new UserNotFoundException("Current user not found"));
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(userService.findByUsername(authentication.getName()));
         }
         throw new UsernameNotFoundException("No authenticated user found");
     }

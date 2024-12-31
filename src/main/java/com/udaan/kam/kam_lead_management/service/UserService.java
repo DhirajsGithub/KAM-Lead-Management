@@ -7,17 +7,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udaan.kam.kam_lead_management.DTO.UserDetailDTO;
-import com.udaan.kam.kam_lead_management.DTO.UserListDTO;
+import com.udaan.kam.kam_lead_management.DTO.UserDTO;
 import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.exception.BadRequestException;
 import com.udaan.kam.kam_lead_management.exception.UserNotFoundException;
 import com.udaan.kam.kam_lead_management.repository.UserRepository;
+import com.udaan.kam.kam_lead_management.util.DTOConverterUtil;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+	 private DTOConverterUtil dtoConverter;
 
     // Create a new User
     public UserDetailDTO createUser(User user) {
@@ -25,29 +29,22 @@ public class UserService {
             throw new BadRequestException("Username is required.");
         }
         userRepository.save(user);
-        return UserDetailDTOFunc(user);
+        return dtoConverter.convertToUserDetailDto(user);
     }
 
     // Get all Users
-    public List<UserListDTO> getAllUsersAsDTO() {
-        return userRepository.findAll().stream()
-            .map(user -> new UserListDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getRole().toString(),
-                user.getIsActive()
-            ))
-            .collect(Collectors.toList());
+    public List<UserDTO> getAllUsersAsDTO() {
+    	
+    	List<User> users = userRepository.findAll();
+    	return dtoConverter.convertToUserDTOList(users);
+    
     }
 
     // Get User by ID
     public UserDetailDTO getUserDetailsById(Integer id) {
     	 User user = userRepository.findById(id)
                  .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
-       return UserDetailDTOFunc(user);
+       return dtoConverter.convertToUserDetailDto(user);
     }
 
     // Update User by ID
@@ -76,25 +73,10 @@ public class UserService {
     public UserDetailDTO findByUsername(String username) {
     	User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("Current User not found"));
-      return UserDetailDTOFunc(user);
+      return dtoConverter.convertToUserDetailDto(user);
     	
     }
     
-    private UserDetailDTO UserDetailDTOFunc(User user){
-    	return new UserDetailDTO(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getRole().toString(),
-                user.getCreatedAt(),
-                user.getIsActive(),
-                user.getRestaurantUsers(),
-                user.getInteractions(),
-                user.getPerformanceMetrices()
-        );
-    }
 }
 
 

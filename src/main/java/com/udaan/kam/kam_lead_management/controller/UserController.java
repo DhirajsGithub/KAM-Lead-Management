@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udaan.kam.kam_lead_management.DTO.UserDetailDTO;
-import com.udaan.kam.kam_lead_management.DTO.UserListDTO;
+import com.udaan.kam.kam_lead_management.DTO.UserDTO;
 import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.security.AuthRequest;
 import com.udaan.kam.kam_lead_management.security.AuthResponse;
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public List<UserListDTO> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userService.getAllUsersAsDTO();
     }
 

@@ -1,16 +1,17 @@
 package com.udaan.kam.kam_lead_management.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.udaan.kam.kam_lead_management.entity.PerformanceMetric;
 import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.exception.BadRequestException;
 import com.udaan.kam.kam_lead_management.exception.PerformanceMetricNotFoundException;
 import com.udaan.kam.kam_lead_management.repository.PerformanceMetricRepository;
 import com.udaan.kam.kam_lead_management.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Optional;
+import com.udaan.kam.kam_lead_management.util.PermissionUtils;
 
 @Service
 public class PerformanceMetricService {
@@ -20,16 +21,19 @@ public class PerformanceMetricService {
 
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private PermissionUtils permissionUtils;
 
     public List<PerformanceMetric> getMetricsByUserId(Integer userId, Integer requestingUserId) {
-        if (!isAdmin(requestingUserId) && !requestingUserId.equals(userId)) {
+        if (!permissionUtils.isAdmin(requestingUserId) && !requestingUserId.equals(userId)) {
             throw new BadRequestException("You are not authorized to view metrics for this user.");
         }
         return performanceMetricRepository.findByUserId(userId);
     }
 
     public PerformanceMetric createMetric(Integer userId, PerformanceMetric metric, Integer requestingUserId) {
-        if (!isAdmin(requestingUserId)) {
+        if (!permissionUtils.isAdmin(requestingUserId)) {
             throw new BadRequestException("You are not authorized to create metrics for this user.");
         }
 
@@ -44,7 +48,7 @@ public class PerformanceMetricService {
         PerformanceMetric existingMetric = performanceMetricRepository.findById(metricId)
                 .orElseThrow(() -> new PerformanceMetricNotFoundException("Metric not found with ID: " + metricId));
 
-        if (!isAdmin(requestingUserId)) {
+        if (!permissionUtils.isAdmin(requestingUserId)) {
             throw new BadRequestException("You are not authorized to update this metric.");
         }
 
@@ -62,15 +66,11 @@ public class PerformanceMetricService {
         PerformanceMetric metric = performanceMetricRepository.findById(metricId)
                 .orElseThrow(() -> new PerformanceMetricNotFoundException("Metric not found with ID: " + metricId));
 
-        if (!isAdmin(requestingUserId)) {
+        if (!permissionUtils.isAdmin(requestingUserId)) {
             throw new BadRequestException("You are not authorized to delete this metric.");
         }
 
         performanceMetricRepository.delete(metric);
     }
     
-    private boolean isAdmin(Integer userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.isPresent() && user.get().getRole().toString().equals("ADMIN");
-    }
 }

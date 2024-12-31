@@ -34,19 +34,19 @@ public class RestaurantUserController {
         return ResponseEntity.status(201).body(createdRestaurantUser);
     }
 
-    // Get all users associated with a restaurant
-    @GetMapping("/restaurant/{restaurantId}")
-    public ResponseEntity<List<RestaurantUser>> getUsersByRestaurant(@PathVariable Integer restaurantId) {
-        List<RestaurantUser> users = restaurantUserService.getUsersByRestaurant(restaurantId);
-        return ResponseEntity.ok(users);
-    }
-
-    // Get all restaurants associated with a user
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<RestaurantUser>> getRestaurantsByUser(@PathVariable Integer userId) {
-        List<RestaurantUser> restaurants = restaurantUserService.getRestaurantsByUser(userId);
-        return ResponseEntity.ok(restaurants);
-    }
+//    // Get all users associated with a restaurant
+//    @GetMapping("/restaurant/{restaurantId}")
+//    public ResponseEntity<List<RestaurantUser>> getUsersByRestaurant(@PathVariable Integer restaurantId) {
+//        List<RestaurantUser> users = restaurantUserService.getUsersByRestaurant(restaurantId);
+//        return ResponseEntity.ok(users);
+//    }
+//
+//    // Get all restaurants associated with a user
+//    @GetMapping("/user/{userId}")
+//    public ResponseEntity<List<RestaurantUser>> getRestaurantsByUser(@PathVariable Integer userId) {
+//        List<RestaurantUser> restaurants = restaurantUserService.getRestaurantsByUser(userId);
+//        return ResponseEntity.ok(restaurants);
+//    }
 
     // Delete a user-restaurant relationship
     @DeleteMapping

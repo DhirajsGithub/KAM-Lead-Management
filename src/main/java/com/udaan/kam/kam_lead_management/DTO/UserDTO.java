@@ -1,6 +1,6 @@
 package com.udaan.kam.kam_lead_management.DTO;
 
-public class UserListDTO {
+public class UserDTO {
     private Integer id;
     private String username;
     private String email;
@@ -9,7 +9,7 @@ public class UserListDTO {
     private String role;
     private boolean isActive;
 
-    public UserListDTO(Integer id, String username, String email, String firstName, String lastName, String role, boolean isActive) {
+    public UserDTO(Integer id, String username, String email, String firstName, String lastName, String role, boolean isActive) {
         this.id = id;
         this.username = username;
         this.email = email;

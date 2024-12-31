@@ -1,6 +1,7 @@
 package com.udaan.kam.kam_lead_management.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,14 +19,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udaan.kam.kam_lead_management.DTO.RestaurantDTO;
+import com.udaan.kam.kam_lead_management.DTO.RestaurantDetailDTO;
+import com.udaan.kam.kam_lead_management.DTO.UserDTO;
 import com.udaan.kam.kam_lead_management.entity.CallSchedule;
 import com.udaan.kam.kam_lead_management.entity.Contact;
+import com.udaan.kam.kam_lead_management.entity.Interaction;
+import com.udaan.kam.kam_lead_management.entity.Order;
 import com.udaan.kam.kam_lead_management.entity.Restaurant;
+import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.exception.UnauthorizedAccessException;
 import com.udaan.kam.kam_lead_management.security.UserDetailsImpl;
 import com.udaan.kam.kam_lead_management.service.CallScheduleService;
 import com.udaan.kam.kam_lead_management.service.ContactService;
+import com.udaan.kam.kam_lead_management.service.InteractionService;
+import com.udaan.kam.kam_lead_management.service.OrderService;
 import com.udaan.kam.kam_lead_management.service.RestaurantService;
+import com.udaan.kam.kam_lead_management.util.DTOConverterUtil;
 import com.udaan.kam.kam_lead_management.util.PermissionUtils;
 
 import jakarta.validation.Valid;
@@ -38,6 +47,13 @@ public class RestaurantController {
 	private RestaurantService restaurantService;
 
 	@Autowired
+	private InteractionService interactionsService;
+
+	@Autowired
+	private OrderService orderService;
+	
+	
+	@Autowired
 	private ContactService contactService;
 
 	@Autowired
@@ -45,6 +61,9 @@ public class RestaurantController {
 
 	@Autowired
 	private PermissionUtils permissionUtils;
+	
+	 @Autowired
+	 private DTOConverterUtil dtoConverter;
 
 	@PostMapping
 	// Create a Restaurant
@@ -54,22 +73,26 @@ public class RestaurantController {
 	}
 
 	@GetMapping("/{restaurant_id}")
-	public ResponseEntity<Restaurant> getRestaurantById(@PathVariable Integer restaurant_id,
-			@AuthenticationPrincipal UserDetails currentUser) {
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;
-		Integer userId = userDetailsImpl.getUserId();
-		Restaurant restaurant = restaurantService.getRestaurantById(restaurant_id);
+	public ResponseEntity<RestaurantDetailDTO> getRestaurantById(@PathVariable Integer restaurant_id,
+	        @AuthenticationPrincipal UserDetails currentUser) {
+	    UserDetailsImpl userDetailsImpl = (UserDetailsImpl) currentUser;
+	    Integer userId = userDetailsImpl.getUserId();
+	    Restaurant restaurant = restaurantService.getRestaurantById(restaurant_id);
 
-		if (permissionUtils.isAdminOrAssignedManager(userId, restaurant_id)) {
-			List<Contact> contacts = contactService.getContactsByRestaurantId(restaurant_id, userId);
-			List<CallSchedule> callSchedules = callScheduleService.getCallSchedulesByRestaurantId(restaurant_id, userId);
-			restaurant.setCallSchedules(callSchedules);
-			restaurant.setContacts(contacts);
+	    if (permissionUtils.isAdminOrAssignedManager(userId, restaurant_id)) {
+	        List<Contact> contacts = contactService.getContactsByRestaurantId(restaurant_id, userId);
+	        List<CallSchedule> callSchedules = callScheduleService.getCallSchedulesByRestaurantId(restaurant_id, userId);
+	        List<Interaction> interactions = interactionsService.getInteractionsByRestaurantId(restaurant_id, userId);
+	        List<Order> orders = orderService.getOrdersByRestaurantId(restaurant_id, userId);
+	        restaurant.setCallSchedules(callSchedules);
+	        restaurant.setContacts(contacts);
 
-			return ResponseEntity.ok(restaurant);
-		} else {
-			throw new UnauthorizedAccessException("You are not authorized to access this restaurant.");
-		}
+	        RestaurantDetailDTO detailDTO = dtoConverter.convertToRestaurantDetailDTO(restaurant, contacts, callSchedules, interactions, orders);
+
+	        return ResponseEntity.ok(detailDTO);
+	    } else {
+	        throw new UnauthorizedAccessException("You are not authorized to access this restaurant.");
+	    }
 	}
 
 	// Get All Restaurants (Admin can see all, Managers can only see assigned ones)

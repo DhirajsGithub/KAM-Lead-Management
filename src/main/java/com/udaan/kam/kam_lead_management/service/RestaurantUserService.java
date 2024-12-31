@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.udaan.kam.kam_lead_management.entity.RestaurantUser;
 import com.udaan.kam.kam_lead_management.exception.DuplicateRelationshipException;
+import com.udaan.kam.kam_lead_management.exception.ResourceNotFoundException;
 import com.udaan.kam.kam_lead_management.repository.RestaurantUserRepository;
 
 @Service
@@ -60,6 +61,10 @@ public class RestaurantUserService {
     @Transactional
     public void deleteUserRestaurant(Integer restaurantId, Integer userId) {
         Optional<RestaurantUser> restaurantUser = restaurantUserRepository.findByRestaurantIdAndUserId(restaurantId, userId);
+        if(!restaurantUser.isPresent()) {
+        	String message = String.format("Can't find resturant with id %d and user with id %d", restaurantId, userId);
+        	throw new ResourceNotFoundException(message);
+        }
         restaurantUser.ifPresent(restaurantUserRepository::delete);
     }
 

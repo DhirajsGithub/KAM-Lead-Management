@@ -16,13 +16,14 @@ public class UserDetailDTO {
     private String role;
     private LocalDateTime createdAt;
     private Boolean isActive;
-    private List<RestaurantUser> restaurantUsers;		// will update it later base on restuarantUser DTO
-    private List<Interaction> interactions;
+    private List<RestaurantDTO> assignRestaurants;	
+
+	private List<Interaction> interactions;
     private List<PerformanceMetric> performanceMetrices;
       
     
 	public UserDetailDTO(Integer id, String username, String email, String firstName, String lastName, String role,
-			LocalDateTime createdAt, Boolean isActive, List<RestaurantUser> restaurantUsers,
+			LocalDateTime createdAt, Boolean isActive, List<RestaurantDTO> assignRestaurants,
 			List<Interaction> interactions, List<PerformanceMetric> performanceMetrices) {
 		super();
 		this.id = id;
@@ -33,7 +34,7 @@ public class UserDetailDTO {
 		this.role = role;
 		this.createdAt = createdAt;
 		this.isActive = isActive;
-		this.restaurantUsers = restaurantUsers;
+		this.assignRestaurants = assignRestaurants;
 		this.interactions = interactions;
 		this.performanceMetrices = performanceMetrices;
 	}
@@ -85,12 +86,7 @@ public class UserDetailDTO {
 	public void setIsActive(Boolean isActive) {
 		this.isActive = isActive;
 	}
-	public List<RestaurantUser> getRestaurantUsers() {
-		return restaurantUsers;
-	}
-	public void setRestaurantUsers(List<RestaurantUser> restaurantUsers) {
-		this.restaurantUsers = restaurantUsers;
-	}
+
 	public List<Interaction> getInteractions() {
 		return interactions;
 	}
@@ -102,6 +98,13 @@ public class UserDetailDTO {
 	}
 	public void setPerformanceMetrices(List<PerformanceMetric> performanceMetrices) {
 		this.performanceMetrices = performanceMetrices;
+	}
+	
+    public List<RestaurantDTO> getAssignRestaurants() {
+		return assignRestaurants;
+	}
+	public void setAssignRestaurants(List<RestaurantDTO> assignRestaurants) {
+		this.assignRestaurants = assignRestaurants;
 	}
     
     

@@ -17,6 +17,7 @@ import com.udaan.kam.kam_lead_management.exception.RestaurantNotFoundException;
 import com.udaan.kam.kam_lead_management.exception.UnauthorizedAccessException;
 import com.udaan.kam.kam_lead_management.repository.RestaurantRepository;
 import com.udaan.kam.kam_lead_management.repository.RestaurantUserRepository;
+import com.udaan.kam.kam_lead_management.util.DTOConverterUtil;
 import com.udaan.kam.kam_lead_management.util.PermissionUtils;
 
 @Service
@@ -31,11 +32,14 @@ public class RestaurantService {
     
     @Autowired
     private PermissionUtils permissionUtils;
+    
+	 @Autowired
+	 private DTOConverterUtil dtoConverter;
 
     // Create a new Restaurant
     public RestaurantDTO createRestaurant(Restaurant restaurant) {
         Restaurant res =  restaurantRepository.save(restaurant);
-        return createRestaurantDto(res);
+        return dtoConverter.convertToRestaurantDTO(restaurant);
     }
 
 
@@ -94,7 +98,7 @@ public class RestaurantService {
             existingRestaurant.setLeadStatus(updatedRestaurant.getLeadStatus());
             existingRestaurant.setAnnualRevenue(updatedRestaurant.getAnnualRevenue());
             existingRestaurant.setTimezone(updatedRestaurant.getTimezone());
-            return createRestaurantDto(existingRestaurant);
+            return dtoConverter.convertToRestaurantDTO(existingRestaurant);
         } else {
             throw new UnauthorizedAccessException("You are not authorized to update this restaurant.");
         }
@@ -116,20 +120,9 @@ public class RestaurantService {
         if (restaurant == null) {
             throw new IllegalArgumentException("Restaurant cannot be null");
         }
+        
+        return dtoConverter.convertToRestaurantDTO(restaurant);
 
-        return new RestaurantDTO(
-            restaurant.getId(),
-            restaurant.getName(),
-            restaurant.getAddress(),
-            restaurant.getCity(),
-            restaurant.getState(),
-            restaurant.getPhone(),
-            restaurant.getEmail(),
-            restaurant.getCreatedAt(),
-            restaurant.getLeadStatus().toString(),
-            restaurant.getAnnualRevenue(),
-            restaurant.getTimezone()
-        );
     }
 
 }

@@ -1,19 +1,20 @@
 package com.udaan.kam.kam_lead_management.service;
 
-import com.udaan.kam.kam_lead_management.entity.Interaction;
-import com.udaan.kam.kam_lead_management.entity.Restaurant;
-import com.udaan.kam.kam_lead_management.entity.Contact;
-import com.udaan.kam.kam_lead_management.entity.User;
-import com.udaan.kam.kam_lead_management.exception.BadRequestException;
-import com.udaan.kam.kam_lead_management.exception.InteractionNotFoundException;
-import com.udaan.kam.kam_lead_management.repository.InteractionRepository;
-import com.udaan.kam.kam_lead_management.repository.ContactRepository;
-import com.udaan.kam.kam_lead_management.repository.UserRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.udaan.kam.kam_lead_management.entity.Contact;
+import com.udaan.kam.kam_lead_management.entity.Interaction;
+import com.udaan.kam.kam_lead_management.entity.Restaurant;
+import com.udaan.kam.kam_lead_management.entity.User;
+import com.udaan.kam.kam_lead_management.exception.BadRequestException;
+import com.udaan.kam.kam_lead_management.exception.InteractionNotFoundException;
+import com.udaan.kam.kam_lead_management.repository.ContactRepository;
+import com.udaan.kam.kam_lead_management.repository.InteractionRepository;
+import com.udaan.kam.kam_lead_management.repository.UserRepository;
+import com.udaan.kam.kam_lead_management.util.PermissionUtils;
 
 @Service
 public class InteractionService {
@@ -29,12 +30,12 @@ public class InteractionService {
 
     @Autowired
     private UserRepository userRepository;
-
+    
     @Autowired
-    private RestaurantUserService restaurantUserService;
+ 	private PermissionUtils permissionUtils;
 
     public List<Interaction> getInteractionsByRestaurantId(Integer restaurantId, Integer requestingUserId) {
-    	if (!isAdminOrAssignedManager(requestingUserId, restaurantId)) {
+    	if (!permissionUtils.isAdminOrAssignedManager(requestingUserId, restaurantId)) {
             throw new BadRequestException("You are not authorized to create interactions for this restaurant.");
         }
         return interactionRepository.findByRestaurantId(restaurantId);
@@ -44,7 +45,7 @@ public class InteractionService {
         Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
 
         // Check if the user is authorized
-        if (!isAdminOrAssignedManager(userId, restaurantId)) {
+        if (!permissionUtils.isAdminOrAssignedManager(userId, restaurantId)) {
             throw new BadRequestException("You are not authorized to create interactions for this restaurant.");
         }
 
@@ -65,7 +66,7 @@ public class InteractionService {
                 .orElseThrow(() -> new InteractionNotFoundException("Interaction not found with ID: " + interactionId));
 
         // Check if the user is authorized
-        if (!isAdminOrAssignedManager(restaurantId, userId)) {
+        if (!permissionUtils.isAdminOrAssignedManager(restaurantId, userId)) {
             throw new BadRequestException("You are not authorized to update this interaction.");
         }
 
@@ -82,20 +83,11 @@ public class InteractionService {
                 .orElseThrow(() -> new InteractionNotFoundException("Interaction not found with ID: " + interactionId));
 
         // Check if the user is authorized
-        if (!isAdminOrAssignedManager(userId, restaurantId)) {
+        if (!permissionUtils.isAdminOrAssignedManager(userId, restaurantId)) {
             throw new BadRequestException("You are not authorized to delete this interaction.");
         }
 
         interactionRepository.delete(interaction);
     }
 
-    // Check if the user is an Admin or assigned Manager for the restaurant
-    private boolean isAdminOrAssignedManager(Integer userId, Integer restaurantId) {
-        return isAdmin(userId) || restaurantUserService.isRestaurantAssignedToUser(restaurantId, userId);
-    }
-
-    private boolean isAdmin(Integer userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user.isPresent() && user.get().getRole().toString().equals("ADMIN");
-    }
 }

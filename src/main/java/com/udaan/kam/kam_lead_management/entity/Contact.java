@@ -42,19 +42,6 @@ public class Contact {
     @JoinColumn(name = "restaurant_id", nullable = false)
     @JsonBackReference
     private Restaurant restaurant;
-    
-//    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference
-//    private List<Interaction> interactions = new ArrayList<>();
-//
-//
-//    public List<Interaction> getInteractions() {
-//		return interactions;
-//	}
-//
-//	public void setInteractions(List<Interaction> interactions) {
-//		this.interactions = interactions;
-//	}
 
     @NotBlank(message = "First name cannot be blank")
     @Size(max = 50, message = "First name must not exceed 50 characters")

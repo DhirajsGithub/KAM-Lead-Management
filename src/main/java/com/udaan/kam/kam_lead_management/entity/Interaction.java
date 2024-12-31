@@ -49,6 +49,7 @@ public class Interaction {
     @JoinColumn(name = "user_id", nullable = false)
     @JsonIgnore
     private User user;
+    
 
     @NotNull(message = "Interaction type cannot be null")
     @Enumerated(EnumType.STRING)

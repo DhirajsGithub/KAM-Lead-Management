@@ -37,20 +37,6 @@ CREATE TABLE restaurants (
     annual_revenue DECIMAL(15,2),
     timezone VARCHAR(50),
     
-    -- One-to-Many relationships (stores latest/primary records)
-    primary_contact_id INT,
-    latest_interaction_id INT,
-    latest_order_id INT,
-    current_schedule_id INT,
-    latest_metric_id INT,
-    
-    -- Many-to-Many relationship with users handled through restaurant_users table
-    
-    FOREIGN KEY (primary_contact_id) REFERENCES contacts(contact_id),
-    FOREIGN KEY (latest_interaction_id) REFERENCES interactions(interaction_id),
-    FOREIGN KEY (latest_order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (current_schedule_id) REFERENCES call_schedules(schedule_id),
-    FOREIGN KEY (latest_metric_id) REFERENCES performance_metrics(metric_id)
 );
 
 -- Contacts (One-to-Many: one restaurant has many contacts)

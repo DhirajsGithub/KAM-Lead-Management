@@ -1,7 +1,6 @@
 package com.udaan.kam.kam_lead_management.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,15 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.udaan.kam.kam_lead_management.DTO.InteractionDTO;
 import com.udaan.kam.kam_lead_management.DTO.RestaurantDTO;
 import com.udaan.kam.kam_lead_management.DTO.RestaurantDetailDTO;
-import com.udaan.kam.kam_lead_management.DTO.UserDTO;
 import com.udaan.kam.kam_lead_management.entity.CallSchedule;
 import com.udaan.kam.kam_lead_management.entity.Contact;
-import com.udaan.kam.kam_lead_management.entity.Interaction;
 import com.udaan.kam.kam_lead_management.entity.Order;
 import com.udaan.kam.kam_lead_management.entity.Restaurant;
-import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.exception.UnauthorizedAccessException;
 import com.udaan.kam.kam_lead_management.security.UserDetailsImpl;
 import com.udaan.kam.kam_lead_management.service.CallScheduleService;
@@ -82,7 +79,7 @@ public class RestaurantController {
 	    if (permissionUtils.isAdminOrAssignedManager(userId, restaurant_id)) {
 	        List<Contact> contacts = contactService.getContactsByRestaurantId(restaurant_id, userId);
 	        List<CallSchedule> callSchedules = callScheduleService.getCallSchedulesByRestaurantId(restaurant_id, userId);
-	        List<Interaction> interactions = interactionsService.getInteractionsByRestaurantId(restaurant_id, userId);
+	        List<InteractionDTO> interactions = interactionsService.getInteractionsByRestaurantId(restaurant_id, userId);
 	        List<Order> orders = orderService.getOrdersByRestaurantId(restaurant_id, userId);
 	        restaurant.setCallSchedules(callSchedules);
 	        restaurant.setContacts(contacts);

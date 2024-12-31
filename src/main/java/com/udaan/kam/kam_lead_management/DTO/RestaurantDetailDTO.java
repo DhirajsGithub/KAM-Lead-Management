@@ -24,14 +24,14 @@ public class RestaurantDetailDTO {
 	    private List<UserDTO> users;
 	    private List<Contact> contacts;
 	    private List<CallSchedule> callSchedules;
-	    private List<Interaction> interactions;
+	    private List<InteractionDTO> interactions;
 	    private List<Order> orders; 
 
 	    
 	    public RestaurantDetailDTO(Integer id, String name, String address, String city, String state,
 	                         String phone, String email, LocalDateTime createdAt, String leadStatus,
 	                         BigDecimal annualRevenue, String timezone, List<UserDTO> users, 
-	                         List<Contact> contacts, List<CallSchedule> callSchedules,List<Interaction> interactions,
+	                         List<Contact> contacts, List<CallSchedule> callSchedules,List<InteractionDTO> interactions,
 	                         List<Order> orders) {
 	        this.id = id;
 	        this.name = name;
@@ -77,13 +77,13 @@ public class RestaurantDetailDTO {
 
 
 
-		public List<Interaction> getInteractions() {
+		public List<InteractionDTO> getInteractions() {
 			return interactions;
 		}
 
 
 
-		public void setInteractions(List<Interaction> interactions) {
+		public void setInteractions(List<InteractionDTO> interactions) {
 			this.interactions = interactions;
 		}
 

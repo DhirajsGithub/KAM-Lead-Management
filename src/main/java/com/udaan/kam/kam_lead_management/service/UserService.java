@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udaan.kam.kam_lead_management.DTO.UserDetailDTO;
+import com.udaan.kam.kam_lead_management.DTO.InteractionDTO;
 import com.udaan.kam.kam_lead_management.DTO.UserDTO;
 import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.exception.BadRequestException;
@@ -44,6 +45,8 @@ public class UserService {
     public UserDetailDTO getUserDetailsById(Integer id) {
     	 User user = userRepository.findById(id)
                  .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
+    	 
+//    	List<InteractionDTO>  interactions = 
        return dtoConverter.convertToUserDetailDto(user);
     }
 

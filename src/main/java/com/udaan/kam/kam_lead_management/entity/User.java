@@ -81,8 +81,20 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnoreProperties("user")
     private List<Interaction> interactions = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
+    private List<PerformanceMetric> performanceMetrices = new ArrayList<>();
 
-    public List<Interaction> getInteractions() {
+    public List<PerformanceMetric> getPerformanceMetrices() {
+		return performanceMetrices;
+	}
+
+	public void setPerformanceMetrices(List<PerformanceMetric> performanceMetrices) {
+		this.performanceMetrices = performanceMetrices;
+	}
+
+	public List<Interaction> getInteractions() {
 		return interactions;
 	}
 

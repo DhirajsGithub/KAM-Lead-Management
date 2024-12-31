@@ -2,6 +2,7 @@ package com.udaan.kam.kam_lead_management.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -87,8 +88,8 @@ public class Order {
         return orderDate;
     }
 
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
+    public void setOrderDate(String orderDate) {
+        this.orderDate =  LocalDateTime.parse(orderDate , DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public BigDecimal getTotalAmount() {

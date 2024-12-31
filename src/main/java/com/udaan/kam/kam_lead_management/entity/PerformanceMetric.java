@@ -2,6 +2,9 @@ package com.udaan.kam.kam_lead_management.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,8 +34,9 @@ public class PerformanceMetric {
     @NotNull(message = "User cannot be null")
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
-
+    
     @NotNull(message = "Metric date cannot be null")
     @Column(name = "metric_date", nullable = false)
     private LocalDateTime metricDate;
@@ -91,8 +95,8 @@ public class PerformanceMetric {
         return metricDate;
     }
 
-    public void setMetricDate(LocalDateTime metricDate) {
-        this.metricDate = metricDate;
+    public void setMetricDate(String metricDate) {
+        this.metricDate =  LocalDateTime.parse(metricDate , DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 
     public Integer getLeadsCount() {

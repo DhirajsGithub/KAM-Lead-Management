@@ -16,37 +16,39 @@ public class PerformanceMetricController {
     @Autowired
     private PerformanceMetricService performanceMetricService;
 
-    @GetMapping("/{userId}")
+    @GetMapping("/{restaurantId}")
     public List<PerformanceMetric> getMetricsByUserId(
-            @PathVariable Integer userId,
+            @PathVariable Integer restaurantId,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        Integer requestingUserId = currentUser.getUserId();
-        return performanceMetricService.getMetricsByUserId(userId, requestingUserId);
+        Integer userId = currentUser.getUserId();
+        return performanceMetricService.getMetricsByRestaurantId(userId, restaurantId);
     }
 
-    @PostMapping("/{userId}")
+    @PostMapping("/{restaurantId}")
     public PerformanceMetric createMetric(
-            @PathVariable Integer userId,
+            @PathVariable Integer restaurantId,
             @RequestBody PerformanceMetric metric,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        Integer requestingUserId = currentUser.getUserId();
-        return performanceMetricService.createMetric(userId, metric, requestingUserId);
+        Integer userId = currentUser.getUserId();
+        return performanceMetricService.createMetric(userId, metric, restaurantId);
     }
 
-    @PutMapping("/{metricId}")
+    @PutMapping("/{restaurantId}/{metricId}")
     public PerformanceMetric updateMetric(
             @PathVariable Integer metricId,
+            @PathVariable Integer restaurantId,
             @RequestBody PerformanceMetric updatedMetric,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        Integer requestingUserId = currentUser.getUserId();
-        return performanceMetricService.updateMetric(metricId, updatedMetric, requestingUserId);
+        Integer userId = currentUser.getUserId();
+        return performanceMetricService.updateMetric(userId, updatedMetric, restaurantId,metricId );
     }
 
-    @DeleteMapping("/{metricId}")
+    @DeleteMapping("/{restaurantId}/{metricId}")
     public void deleteMetric(
             @PathVariable Integer metricId,
+            @PathVariable Integer restaurantId,
             @AuthenticationPrincipal UserDetailsImpl currentUser) {
-        Integer requestingUserId = currentUser.getUserId();
-        performanceMetricService.deleteMetric(metricId, requestingUserId);
+        Integer userId = currentUser.getUserId();
+        performanceMetricService.deleteMetric(userId, metricId, restaurantId);
     }
 }

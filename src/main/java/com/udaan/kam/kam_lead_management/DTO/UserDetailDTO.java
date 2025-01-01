@@ -19,12 +19,11 @@ public class UserDetailDTO {
     private List<RestaurantDTO> assignRestaurants;	
 
 	private List<InteractionDTO> interactions;
-    private List<PerformanceMetric> performanceMetrices;
       
     
 	public UserDetailDTO(Integer id, String username, String email, String firstName, String lastName, String role,
 			LocalDateTime createdAt, Boolean isActive, List<RestaurantDTO> assignRestaurants,
-			List<InteractionDTO> interactions, List<PerformanceMetric> performanceMetrices) {
+			List<InteractionDTO> interactions) {
 		super();
 		this.id = id;
 		this.username = username;
@@ -36,7 +35,6 @@ public class UserDetailDTO {
 		this.isActive = isActive;
 		this.assignRestaurants = assignRestaurants;
 		this.interactions = interactions;
-		this.performanceMetrices = performanceMetrices;
 	}
 	public Integer getId() {
 		return id;
@@ -92,12 +90,6 @@ public class UserDetailDTO {
 	}
 	public void setInteractions(List<InteractionDTO> interactions) {
 		this.interactions = interactions;
-	}
-	public List<PerformanceMetric> getPerformanceMetrices() {
-		return performanceMetrices;
-	}
-	public void setPerformanceMetrices(List<PerformanceMetric> performanceMetrices) {
-		this.performanceMetrices = performanceMetrices;
 	}
 	
     public List<RestaurantDTO> getAssignRestaurants() {

@@ -1,12 +1,8 @@
 package com.udaan.kam.kam_lead_management.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +15,7 @@ import com.udaan.kam.kam_lead_management.service.RestaurantUserService;
 @RestController
 @RequestMapping("/api/restaurant-users")
 public class RestaurantUserController {
+	
 
     private final RestaurantUserService restaurantUserService;
 
@@ -29,9 +26,9 @@ public class RestaurantUserController {
 
     // Add a user to a restaurant
     @PostMapping
-    public ResponseEntity<RestaurantUser> addUserToRestaurant(@RequestBody RestaurantUser restaurantUser) {
+    public ResponseEntity<String> addUserToRestaurant(@RequestBody RestaurantUser restaurantUser) {
         RestaurantUser createdRestaurantUser = restaurantUserService.addUserToRestaurant(restaurantUser);
-        return ResponseEntity.status(201).body(createdRestaurantUser);
+        return ResponseEntity.status(201).body("Added Successfully");
     }
 
 //    // Get all users associated with a restaurant

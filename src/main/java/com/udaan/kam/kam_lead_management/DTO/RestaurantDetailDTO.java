@@ -8,6 +8,7 @@ import com.udaan.kam.kam_lead_management.entity.CallSchedule;
 import com.udaan.kam.kam_lead_management.entity.Contact;
 import com.udaan.kam.kam_lead_management.entity.Interaction;
 import com.udaan.kam.kam_lead_management.entity.Order;
+import com.udaan.kam.kam_lead_management.entity.PerformanceMetric;
 
 public class RestaurantDetailDTO {
 	 private Integer id;
@@ -26,13 +27,14 @@ public class RestaurantDetailDTO {
 	    private List<CallSchedule> callSchedules;
 	    private List<InteractionDTO> interactions;
 	    private List<Order> orders; 
+	    private List<PerformanceMetric> PerformanceMetrices;
 
 	    
 	    public RestaurantDetailDTO(Integer id, String name, String address, String city, String state,
 	                         String phone, String email, LocalDateTime createdAt, String leadStatus,
 	                         BigDecimal annualRevenue, String timezone, List<UserDTO> users, 
 	                         List<Contact> contacts, List<CallSchedule> callSchedules,List<InteractionDTO> interactions,
-	                         List<Order> orders) {
+	                         List<Order> orders, List<PerformanceMetric> PerformanceMetrices) {
 	        this.id = id;
 	        this.name = name;
 	        this.address = address;
@@ -49,11 +51,24 @@ public class RestaurantDetailDTO {
 	        this.callSchedules = callSchedules;
 	        this.interactions = interactions;
 	        this.orders = orders;
+	        this.PerformanceMetrices = PerformanceMetrices;
 	    }
 	    
 	    
 
-	    public List<Contact> getContacts() {
+	    public List<PerformanceMetric> getPerformanceMetrices() {
+			return PerformanceMetrices;
+		}
+
+
+
+		public void setPerformanceMetrices(List<PerformanceMetric> performanceMetrices) {
+			PerformanceMetrices = performanceMetrices;
+		}
+
+
+
+		public List<Contact> getContacts() {
 			return contacts;
 		}
 

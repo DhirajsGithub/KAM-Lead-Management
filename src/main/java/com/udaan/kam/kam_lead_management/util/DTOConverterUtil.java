@@ -14,6 +14,7 @@ import com.udaan.kam.kam_lead_management.entity.CallSchedule;
 import com.udaan.kam.kam_lead_management.entity.Contact;
 import com.udaan.kam.kam_lead_management.entity.Interaction;
 import com.udaan.kam.kam_lead_management.entity.Order;
+import com.udaan.kam.kam_lead_management.entity.PerformanceMetric;
 import com.udaan.kam.kam_lead_management.entity.Restaurant;
 import com.udaan.kam.kam_lead_management.entity.RestaurantUser;
 import com.udaan.kam.kam_lead_management.entity.User;
@@ -44,7 +45,7 @@ public class DTOConverterUtil {
 		return new UserDetailDTO(user.getId(), user.getUsername(), user.getEmail(), user.getFirstName(),
 				user.getLastName(), user.getRole().toString(), user.getCreatedAt(), user.getIsActive(), restaurantDTOs,
 				user.getInteractions().stream().map(interaction -> (convertToInteractionDTO(interaction)))
-				.collect(Collectors.toList()), user.getPerformanceMetrices());
+				.collect(Collectors.toList()));
 	}
 
 	public RestaurantDTO convertToRestaurantDTO(Restaurant restaurant) {
@@ -58,7 +59,7 @@ public class DTOConverterUtil {
 	}
 
 	public RestaurantDetailDTO convertToRestaurantDetailDTO(Restaurant restaurant, List<Contact> contacts,
-			List<CallSchedule> callSchedules, List<InteractionDTO> interactions, List<Order> orders) {
+			List<CallSchedule> callSchedules, List<InteractionDTO> interactions, List<Order> orders, List<PerformanceMetric> PerformanceMetrices) {
 		if (restaurant == null)
 			return null;
 
@@ -68,7 +69,7 @@ public class DTOConverterUtil {
 		return new RestaurantDetailDTO(restaurant.getId(), restaurant.getName(), restaurant.getAddress(),
 				restaurant.getCity(), restaurant.getState(), restaurant.getPhone(), restaurant.getEmail(),
 				restaurant.getCreatedAt(), restaurant.getLeadStatus().toString(), restaurant.getAnnualRevenue(),
-				restaurant.getTimezone(), userDTOs, contacts, callSchedules, interactions, orders);
+				restaurant.getTimezone(), userDTOs, contacts, callSchedules, interactions, orders, PerformanceMetrices);
 	}
 
 	public InteractionDTO convertToInteractionDTO(Interaction interaction) {

@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +21,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 @Entity
 @Table(name = "performance_metrics", 
        indexes = {
-           @Index(name = "idx_metrics_user", columnList = "user_id"),
+           @Index(name = "idx_metrics_restaurant", columnList = "restaurant_id"),
            @Index(name = "idx_metrics_date", columnList = "metric_date")
        })
 public class PerformanceMetric {
@@ -31,11 +31,11 @@ public class PerformanceMetric {
     @Column(name = "metric_id")
     private Integer id;
 
-    @NotNull(message = "User cannot be null")
+    @NotNull(message = "Restaurant cannot be null")
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private User user;
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonBackReference
+    private Restaurant restaurant;
     
     @NotNull(message = "Metric date cannot be null")
     @Column(name = "metric_date", nullable = false)
@@ -64,8 +64,8 @@ public class PerformanceMetric {
     public PerformanceMetric() {}
 
     // Constructor for mandatory fields
-    public PerformanceMetric(User user, LocalDateTime metricDate, Integer leadsCount, Integer closedDeals, BigDecimal revenue, Integer followUpsCount) {
-        this.user = user;
+    public PerformanceMetric(Restaurant restaurant, LocalDateTime metricDate, Integer leadsCount, Integer closedDeals, BigDecimal revenue, Integer followUpsCount) {
+        this.restaurant = restaurant;
         this.metricDate = metricDate;
         this.leadsCount = leadsCount;
         this.closedDeals = closedDeals;
@@ -74,22 +74,29 @@ public class PerformanceMetric {
     }
 
     // Getters and Setters
+    
+    
 
     public Integer getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public void setMetricDate(LocalDateTime metricDate) {
+		this.metricDate = metricDate;
+	}
+
+	public void setId(Integer id) {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 
     public LocalDateTime getMetricDate() {
         return metricDate;

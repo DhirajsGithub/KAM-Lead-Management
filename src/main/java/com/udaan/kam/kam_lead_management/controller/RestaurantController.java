@@ -23,6 +23,7 @@ import com.udaan.kam.kam_lead_management.DTO.RestaurantDetailDTO;
 import com.udaan.kam.kam_lead_management.entity.CallSchedule;
 import com.udaan.kam.kam_lead_management.entity.Contact;
 import com.udaan.kam.kam_lead_management.entity.Order;
+import com.udaan.kam.kam_lead_management.entity.PerformanceMetric;
 import com.udaan.kam.kam_lead_management.entity.Restaurant;
 import com.udaan.kam.kam_lead_management.exception.UnauthorizedAccessException;
 import com.udaan.kam.kam_lead_management.security.UserDetailsImpl;
@@ -30,6 +31,7 @@ import com.udaan.kam.kam_lead_management.service.CallScheduleService;
 import com.udaan.kam.kam_lead_management.service.ContactService;
 import com.udaan.kam.kam_lead_management.service.InteractionService;
 import com.udaan.kam.kam_lead_management.service.OrderService;
+import com.udaan.kam.kam_lead_management.service.PerformanceMetricService;
 import com.udaan.kam.kam_lead_management.service.RestaurantService;
 import com.udaan.kam.kam_lead_management.util.DTOConverterUtil;
 import com.udaan.kam.kam_lead_management.util.PermissionUtils;
@@ -61,6 +63,9 @@ public class RestaurantController {
 	
 	 @Autowired
 	 private DTOConverterUtil dtoConverter;
+	 
+	 @Autowired
+	 private PerformanceMetricService performanceMetricService;
 
 	@PostMapping
 	// Create a Restaurant
@@ -81,10 +86,11 @@ public class RestaurantController {
 	        List<CallSchedule> callSchedules = callScheduleService.getCallSchedulesByRestaurantId(restaurant_id, userId);
 	        List<InteractionDTO> interactions = interactionsService.getInteractionsByRestaurantId(restaurant_id, userId);
 	        List<Order> orders = orderService.getOrdersByRestaurantId(restaurant_id, userId);
+	        List<PerformanceMetric> performanceMetrices = performanceMetricService.getMetricsByRestaurantId(userId, restaurant_id);
 	        restaurant.setCallSchedules(callSchedules);
 	        restaurant.setContacts(contacts);
 
-	        RestaurantDetailDTO detailDTO = dtoConverter.convertToRestaurantDetailDTO(restaurant, contacts, callSchedules, interactions, orders);
+	        RestaurantDetailDTO detailDTO = dtoConverter.convertToRestaurantDetailDTO(restaurant, contacts, callSchedules, interactions, orders, performanceMetrices);
 
 	        return ResponseEntity.ok(detailDTO);
 	    } else {

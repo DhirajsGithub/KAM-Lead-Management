@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.udaan.kam.kam_lead_management.entity.PerformanceMetric;
+import com.udaan.kam.kam_lead_management.entity.Restaurant;
 import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.exception.BadRequestException;
 import com.udaan.kam.kam_lead_management.exception.PerformanceMetricNotFoundException;
@@ -19,36 +20,37 @@ public class PerformanceMetricService {
     @Autowired
     private PerformanceMetricRepository performanceMetricRepository;
 
-    @Autowired
-    private UserRepository userRepository;
     
     @Autowired
     private PermissionUtils permissionUtils;
+    
+    @Autowired
+	private RestaurantService restaurantService;
+    
+    
 
-    public List<PerformanceMetric> getMetricsByUserId(Integer userId, Integer requestingUserId) {
-        if (!permissionUtils.isAdmin(requestingUserId) && !requestingUserId.equals(userId)) {
-            throw new BadRequestException("You are not authorized to view metrics for this user.");
+    public List<PerformanceMetric> getMetricsByRestaurantId(Integer userId, Integer restaurantId) {
+        if (!permissionUtils.isAdminOrAssignedManager(userId, restaurantId)) {
+            throw new BadRequestException("You are not authorized to view metrics for this restauarnt.");
         }
-        return performanceMetricRepository.findByUserId(userId);
+        return performanceMetricRepository.findByRestaurantId(restaurantId);
     }
-
-    public PerformanceMetric createMetric(Integer userId, PerformanceMetric metric, Integer requestingUserId) {
-        if (!permissionUtils.isAdmin(requestingUserId)) {
-            throw new BadRequestException("You are not authorized to create metrics for this user.");
+    
+    public PerformanceMetric createMetric(Integer userId, PerformanceMetric metric, Integer restaurantId) {
+    	if (!permissionUtils.isAdminOrAssignedManager(userId, restaurantId)) {
+            throw new BadRequestException("You are not authorized to create metrics for this restauarnt.");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BadRequestException("User not found with ID: " + userId));
-
-        metric.setUser(user);
+        Restaurant restaurant = restaurantService.getRestaurantById(restaurantId);
+        metric.setRestaurant(restaurant);
         return performanceMetricRepository.save(metric);
     }
 
-    public PerformanceMetric updateMetric(Integer metricId, PerformanceMetric updatedMetric, Integer requestingUserId) {
+    public PerformanceMetric updateMetric(Integer userId, PerformanceMetric updatedMetric, Integer restaurantId, Integer metricId) {
         PerformanceMetric existingMetric = performanceMetricRepository.findById(metricId)
                 .orElseThrow(() -> new PerformanceMetricNotFoundException("Metric not found with ID: " + metricId));
 
-        if (!permissionUtils.isAdmin(requestingUserId)) {
+    	if (!permissionUtils.isAdminOrAssignedManager(userId, restaurantId)) {
             throw new BadRequestException("You are not authorized to update this metric.");
         }
 
@@ -62,13 +64,15 @@ public class PerformanceMetricService {
         return performanceMetricRepository.save(existingMetric);
     }
 
-    public void deleteMetric(Integer metricId, Integer requestingUserId) {
+    public void deleteMetric(Integer userId, Integer metricId, Integer restaurantId) {
+    	
+    	if (!permissionUtils.isAdminOrAssignedManager(userId, restaurantId)) {
+            throw new BadRequestException("You are not authorized to update this metric.");
+        }
+    	
         PerformanceMetric metric = performanceMetricRepository.findById(metricId)
                 .orElseThrow(() -> new PerformanceMetricNotFoundException("Metric not found with ID: " + metricId));
 
-        if (!permissionUtils.isAdmin(requestingUserId)) {
-            throw new BadRequestException("You are not authorized to delete this metric.");
-        }
 
         performanceMetricRepository.delete(metric);
     }

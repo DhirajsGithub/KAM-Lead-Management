@@ -13,6 +13,8 @@ public class InteractionDTO {
     private LocalDateTime createdAt;
     private UserDTO user;
     private Contact contact;
+    
+    public InteractionDTO() {}
 
     public InteractionDTO(Integer id, String interactionType, LocalDateTime interactionDate, 
             String notes, LocalDateTime followUpDate, LocalDateTime createdAt, UserDTO user, Contact contact) {

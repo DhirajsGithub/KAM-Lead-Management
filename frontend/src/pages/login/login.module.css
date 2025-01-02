@@ -1,0 +1,68 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+  }
+  
+  .card {
+    width: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .form {
+    margin-top: 10px;
+  }
+  .credentialsContainer {
+    margin-bottom: 24px;
+  }
+  
+  .credentialCards {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .credentialCard {
+    flex: 1;
+    padding: 12px;
+    background: #fafafa;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .credentialCard:hover {
+    background: #f5f5f5;
+    transform: translateY(-1px);
+  }
+  
+  .roleTag {
+    display: inline-block;
+    padding: 2px 0px;
+    /* background: #e6f4ff; */
+    color: #1677ff;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .userInfo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #666;
+    font-family: monospace;
+  }
+  
+  .dot {
+    color: #d9d9d9;
+  }

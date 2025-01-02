@@ -1,6 +1,8 @@
 package com.udaan.kam.kam_lead_management.controller;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +19,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.udaan.kam.kam_lead_management.DTO.UserDetailDTO;
 import com.udaan.kam.kam_lead_management.DTO.UserDTO;
+import com.udaan.kam.kam_lead_management.DTO.UserDetailDTO;
 import com.udaan.kam.kam_lead_management.entity.User;
 import com.udaan.kam.kam_lead_management.security.AuthRequest;
 import com.udaan.kam.kam_lead_management.security.AuthResponse;
@@ -100,5 +103,22 @@ public class UserController {
             return ResponseEntity.ok(userService.findByUsername(authentication.getName()));
         }
         throw new UsernameNotFoundException("No authenticated user found");
+    }
+    
+    @GetMapping("/auth/validate-token")
+    public ResponseEntity<Map<String, Boolean>> validateToken(@RequestHeader("Authorization") String authHeader) {
+        try {
+            String token = authHeader.substring(7); // Remove "Bearer " prefix
+            UserDetails userDetails = userDetailsService.loadUserByUsername(jwtService.extractUsername(token));
+            
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("valid", !jwtService.isTokenExpired(token));
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Boolean> response = new HashMap<>();
+            response.put("valid", false);
+            return ResponseEntity.ok(response);
+        }
     }
 }

@@ -1,0 +1,50 @@
+.container {
+  padding: 24px;
+}
+
+.filters {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.searchInput {
+  width: 300px;
+}
+
+.filterSelect {
+  min-width: 150px;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  padding: 48px 0;
+}
+
+.emptyState {
+  padding: 48px 0;
+}
+
+.email {
+  color: #666;
+  font-size: 12px;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .searchInput,
+  .filterSelect {
+    width: 100%;
+  }
+}

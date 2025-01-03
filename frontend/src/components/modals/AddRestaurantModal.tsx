@@ -35,7 +35,6 @@ const AddRestaurantModal: React.FC<AddRestaurantModalProps> = ({
     setLoading(true);
     try {
       const response = await createRestaurant(values, token || "");
-      console.log(response);
       if (response) {
         notification.success({
           message: "Restaurant Added Successfully",

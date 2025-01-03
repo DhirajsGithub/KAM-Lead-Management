@@ -98,6 +98,7 @@ public class RestaurantService {
             existingRestaurant.setLeadStatus(updatedRestaurant.getLeadStatus());
             existingRestaurant.setAnnualRevenue(updatedRestaurant.getAnnualRevenue());
             existingRestaurant.setTimezone(updatedRestaurant.getTimezone());
+            restaurantRepository.save(existingRestaurant);
             return dtoConverter.convertToRestaurantDTO(existingRestaurant);
         } else {
             throw new UnauthorizedAccessException("You are not authorized to update this restaurant.");

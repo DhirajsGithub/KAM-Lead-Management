@@ -1,0 +1,177 @@
+.container {
+  padding: 16px;
+  background: #f5f5f5;
+  overflow-x: scroll;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.addButton {
+  font-weight: 500;
+}
+
+.interactionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 24px;
+  }
+
+  .interactionsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+  }
+}
+
+.interactionCard {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  transition: transform 0.2s;
+  width: 100%;
+  overflow: hidden;
+}
+
+.interactionCard:hover {
+  transform: translateY(-2px);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.type {
+  background-color: #1890ff;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.cardContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 16px 16px;
+}
+
+.mainInfo {
+  background: #fafafa;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.dateInfo {
+  margin-bottom: 12px;
+}
+
+.dateInfo p {
+  margin: 4px 0;
+  color: #666;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.notes {
+  background: white;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #f0f0f0;
+}
+
+.notes p {
+  margin: 8px 0 0 0;
+  color: #333;
+  word-break: break-word;
+}
+
+.peopleInfo {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 480px) {
+  .peopleInfo {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .interactionCard{
+    padding: 0px;
+  }
+}
+
+.contactSection h4, .userSection h4 {
+  color: #1890ff;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #1890ff;
+  font-size: 15px;
+}
+
+.infoGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.infoGrid p {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+  word-break: break-word;
+}
+
+.infoGrid p strong {
+  color: #333;
+}
+
+/* Modal form styles */
+.form {
+  margin-top: 16px;
+}
+
+.datePicker {
+  width: 100%;
+}
+
+.formButtons {
+  margin-top: 24px;
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+  .formButtons {
+    text-align: center;
+  }
+  
+  .formButtons :global(.ant-space) {
+    width: 100%;
+  }
+
+  
+  .formButtons :global(.ant-space-item) {
+    width: 100%;
+  }
+  
+  .formButtons button {
+    width: 100%;
+  }
+}

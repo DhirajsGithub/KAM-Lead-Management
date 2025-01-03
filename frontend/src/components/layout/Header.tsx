@@ -14,11 +14,6 @@ const AppHeader = () => {
       label: <span>{user?.username}</span>,
     },
     {
-      key: 'profile',
-      icon: <ProfileOutlined />,
-      label: 'Profile',
-    },
-    {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: 'Logout',

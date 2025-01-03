@@ -18,15 +18,24 @@ export const login = async (username: string, password: string) => {
 };
 
 // Register API
-export const register = async (user: { username: string; password: string; email: string }) => {
+export const register = async (user: any, token: string) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/auth/register`, user);
+    const response = await axios.post(
+      `${API_BASE_URL}/auth/register`,
+      user, // Pass the user object directly as the payload
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data; // Expecting user details
   } catch (error) {
     console.error('Registration failed:', error);
     throw error;
   }
 };
+
 
 // Get Current User Details API
 export const getCurrentUser = async (token: string) => {
@@ -59,19 +68,24 @@ export const getAllUsers = async (token: string) => {
 };
 
 // Update User API
-export const updateUser = async (id: number, updatedUser: { name?: string; password?: string }, token: string) => {
+export const updateUser = async (id: number, updatedUser: any, token: string) => {
   try {
-    const response = await axios.put(`${API_BASE_URL}/users/${id}`, updatedUser, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      `${API_BASE_URL}/users/${id}`,
+      updatedUser, // Pass the updated user object as the second argument
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data; // Expecting updated user
   } catch (error) {
     console.error('Updating user failed:', error);
     throw error;
   }
 };
+
 
 // Delete User API
 export const deleteUser = async (id: number, token: string) => {

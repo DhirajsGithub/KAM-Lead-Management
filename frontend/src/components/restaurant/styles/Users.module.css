@@ -1,0 +1,30 @@
+.container {
+    padding: 16px;
+    overflow-x: scroll;
+  }
+  
+  .header {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .addButton {
+    margin-left: auto;
+  }
+  
+  .activeStatus {
+    color: #52c41a;
+    font-weight: 500;
+  }
+  
+  .inactiveStatus {
+    color: #ff4d4f;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 576px) {
+    .container {
+      padding: 8px;
+    }
+  }

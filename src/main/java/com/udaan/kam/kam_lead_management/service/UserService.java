@@ -51,18 +51,27 @@ public class UserService {
     }
 
     // Update User by ID
+ // Update User by ID
     public User updateUser(Integer id, User updatedUser) {
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
-            user.setPassword(updatedUser.getPassword());
+            
+            // Only update password if it's provided
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                // Optionally hash the password here before saving
+                user.setPassword(updatedUser.getPassword());
+            }
+
             user.setFirstName(updatedUser.getFirstName());
             user.setLastName(updatedUser.getLastName());
             user.setRole(updatedUser.getRole());
             user.setIsActive(updatedUser.getIsActive());
+
             return userRepository.save(user);
         }).orElseThrow(() -> new UserNotFoundException("User not found with ID: " + id));
     }
+
 
     // Delete User by ID
     public void deleteUser(Integer id) {

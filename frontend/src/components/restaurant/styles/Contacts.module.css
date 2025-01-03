@@ -1,0 +1,42 @@
+.container {
+    padding: 16px;
+    overflow-x: scroll;
+  }
+  
+  .header {
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .addButton {
+    margin-left: auto;
+  }
+  
+  .primary {
+    color: #52c41a;
+    font-weight: 500;
+    background-color: #f6ffed;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #b7eb8f;
+  }
+  
+  .secondary {
+    color: #666;
+    font-weight: 500;
+    background-color: #f5f5f5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #d9d9d9;
+  }
+  
+  @media (max-width: 576px) {
+    .container {
+      padding: 8px;
+    }
+    
+    .header {
+      margin-bottom: 12px;
+    }
+  }

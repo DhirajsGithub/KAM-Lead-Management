@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet, useNavigate } from 'react-router-dom';
-import { Spin } from 'antd';
+import { message, Spin } from 'antd';
 import { useAuth } from '../../store/AuthContext';
 import { validateToken } from '../../services/userApis'; 
 import AppHeader from '../../components/layout/Header';
@@ -12,10 +12,21 @@ const ProtectedPages: React.FC = () => {
 
   const isTokenValid = async () => {
     try {
+      if(!token){
+        message.error('Please login to access this page');
+        navigate('/');
+        return
+      };
       const response = await validateToken(token || "");
+      if(!response.valid){
+        navigate('/');
+        message.error('Token validation failed');
+        return;
+      }
       return response.valid;
     } catch (error) { 
       console.error('Token validation failed:', error);
+      
       navigate('/');
       return false;
     }
@@ -33,7 +44,7 @@ const ProtectedPages: React.FC = () => {
   }
   
 
-  return token ? (
+  return token && !loading ? (
     <div>
       <AppHeader />
       <Outlet />

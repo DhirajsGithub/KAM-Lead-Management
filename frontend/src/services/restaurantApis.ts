@@ -12,8 +12,7 @@ const getAuthHeaders = (token: string) => ({
 
 // Create a Restaurant
 export const createRestaurant = async (restaurant: any, token: string) => {
-  console.log(restaurant)
-  console.log(token)
+
   try {
     const response = await axios.post(API_BASE_URL, restaurant, getAuthHeaders(token));
     return response.data; // Expecting RestaurantDTO

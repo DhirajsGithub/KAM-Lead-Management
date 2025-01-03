@@ -1,0 +1,28 @@
+/* Orders.module.css */
+.container {
+    padding: 24px;
+    overflow-x: scroll;
+  }
+  .addButton{
+    margin-bottom: 16px;
+  }
+  
+  .table {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .pending {
+    color: #faad14;
+    background: #fffbe6;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .completed {
+    color: #52c41a;
+    background: #f6ffed;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }

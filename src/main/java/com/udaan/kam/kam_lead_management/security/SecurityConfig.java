@@ -47,6 +47,10 @@ public class SecurityConfig {
 	        .csrf(csrf -> csrf.disable())
 	        .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
             .authorizeHttpRequests(auth -> auth
+            	
+        		 // Allow access to Swagger UI and OpenAPI documentation
+                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+            		
                 // Public login endpoint
                 .requestMatchers("/api/auth/login").permitAll()
                 

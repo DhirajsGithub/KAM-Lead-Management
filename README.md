@@ -13,7 +13,6 @@
   - [🛠 Tech Stack](#-tech-stack)
   - [🚀 Getting Started](#-getting-started)
     - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
     - [Database Setup](#database-setup)
   - [🎮 Running the Application](#-running-the-application)
   - [🔐 Authentication](#-authentication)
@@ -21,17 +20,35 @@
     - [Token Usage](#token-usage)
   - [📝 Usage Examples](#-usage-examples)
     - [1. Creating a New Restaurant Lead (Admin Only)](#1-creating-a-new-restaurant-lead-admin-only)
-    - [2. Adding a Contact to Restaurant](#2-adding-a-contact-to-restaurant)
+    - [2. Adding a New User/Manager (Admin Only)(Admin Only)](#2-adding-a-new-usermanager-admin-onlyadmin-only)
+      - [Request Example](#request-example)
+    - [3. Adding a Contact to Restaurant](#3-adding-a-contact-to-restaurant)
   - [📊 Database Schema](#-database-schema)
   - [🧪 Testing](#-testing)
+    - [Key Test Classes](#key-test-classes)
+    - [Running the Test Suite](#running-the-test-suite)
   - [🌐 Deployment](#-deployment)
-    - [Environment Variables for Deployment](#environment-variables-for-deployment)
+  - [🗂️Folder Structure](#️folder-structure)
 
 ## 🎯 Overview
 
 The KAM Lead Management System is a comprehensive B2B platform designed for Udaan's Key Account Managers (KAMs) to efficiently manage relationships with large restaurant accounts. This system streamlines lead tracking, interaction management, and performance monitoring of restaurant accounts.
 
 ## ✨ Features
+
+**🏪 Restaurant Management**
+  - Complete restaurant lifecycle tracking (new → contacted → qualified → negotiating → converted/lost)
+  - Advanced filtering and search (status, city, name)
+  - Restaurant profile management
+  - Annual revenue tracking
+  - Multi-location support
+  - Timezone-based operations
+  - Customizable lead status workflows
+  - Bulk restaurant import/export
+  - Automated status transitions
+  - Performance metric dashboard
+
+
 
 - **👥 User Management**
   - Role-based access control (Admin/Manager)
@@ -52,6 +69,18 @@ The KAM Lead Management System is a comprehensive B2B platform designed for Udaa
   - Detailed interaction logging
   - Meeting and call records
   - Follow-up scheduling
+  
+- **📅 Call Schedule Management**
+  - Customizable call frequencies per restaurant
+  - Priority level assignment (1-5)
+  - Automated next call date calculation 
+  - Last call tracking
+
+- **📦 Order Management**
+  - Complete order lifecycle tracking
+  - Multiple order statuses (pending, confirmed, delivered, cancelled)
+  - Total amount calculation
+  - Order history logging
 
 - **📊 Performance Metrics**
   - Real-time performance tracking
@@ -82,6 +111,7 @@ The KAM Lead Management System is a comprehensive B2B platform designed for Udaa
 1. Install JDK 17
 ```bash
 # Verify Java installation
+# should be 17
 java -version
 ```
 
@@ -91,25 +121,35 @@ java -version
 mvn -version
 ```
 
-3. Install MySQL
-```bash
-# Verify MySQL installation
-mysql --version
 ```
 
 ### Installation
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/kam-lead-management.git
-cd kam-lead-management
+git clone https://github.com/DhirajsGithub/KAM-Lead-Management
+cd KAM-Lead-Management
 ```
 
 2. Configure application.properties
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/kam_db
-spring.datasource.username=your_username
-spring.datasource.password=your_password
+spring.application.name=kam-lead-management
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.defer-datasource-initialization=true
+
+spring.datasource.url=jdbc:postgresql://dpg-cts3dkrtq21c7395rgvg-a.oregon-postgres.render.com/my_postgre_db_drkf
+spring.datasource.username=dhiraj
+spring.datasource.password=fIjayLVIYBRI2zWbSBY9NjkZokEGLF1J
+
+jwt.secret=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+
+# Enable OAuth2 and Bearer token authentication
+springdoc.api-docs.security-schemes.oauth2.bearer.token-type=BEARER
+springdoc.api-docs.security-schemes.oauth2.bearer.in=header
+springdoc.api-docs.security-schemes.oauth2.bearer.name=Authorization
+springdoc.api-docs.security-schemes.oauth2.bearer.scheme=Bearer
+
 ```
 
 3. Build the project
@@ -118,13 +158,9 @@ mvn clean install
 ```
 
 ### Database Setup
+The application is pre-configured to use a PostgreSQL database hosted on Render. You don't need to set up a local database, as the configuration is already provided in the `application.properties` file. This ensures seamless integration with the database during development and production.
 
-```sql
--- Create database
-CREATE DATABASE kam_db;
 
--- The application will automatically create tables on startup
-```
 
 ## 🎮 Running the Application
 
@@ -138,7 +174,8 @@ mvn spring-boot:run
 - Deployed: https://kam-lead-management.onrender.com
 
 3. Access Swagger documentation
-- http://localhost:8080/swagger-ui/index.html
+- Local: http://localhost:8080/swagger-ui/index.html
+- deployed: https://kam-lead-management.onrender.com/swagger-ui/index.html
 
 ## 🔐 Authentication
 
@@ -190,11 +227,34 @@ curl -X POST http://localhost:8080/api/restaurant \
     "state": "Maharashtra",
     "phone": "1234567890",
     "email": "restaurant@example.com",
+    "annualRevenue": 344,
     "leadStatus": "NEW"
   }'
 ```
 
-### 2. Adding a Contact to Restaurant
+### 2. Adding a New User/Manager (Admin Only)(Admin Only)
+
+Admins can create a new restaurant lead by making a `POST` request to the `/api/restaurant` endpoint. 
+
+#### Request Example
+
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Authorization: Bearer your_token_here" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "dhiraj",
+    "email": "dhiraj@1234.com",
+    "firstName": "Dhiraj",
+    "lastName": "Borse",
+    "role": "MANAGER",
+    "isActive": true,
+    "password": "dhiraj"
+  }'
+
+```
+
+### 3. Adding a Contact to Restaurant
 
 ```bash
 curl -X POST http://localhost:8080/api/contacts/{restaurant_id} \
@@ -210,6 +270,8 @@ curl -X POST http://localhost:8080/api/contacts/{restaurant_id} \
   }'
 ```
 
+and so on....
+
 ## 📊 Database Schema
 
 The system uses a relational database with the following core tables:
@@ -221,40 +283,6 @@ The system uses a relational database with the following core tables:
 - call_schedules
 - performance_metrics
 - restaurant_users
-
-For detailed schema information, refer to the SQL schemas provided in the project.
-
-## 🧪 Testing
-
-Run the test suite:
-```bash
-# Run all tests
-mvn test
-
-# Run specific test class
-mvn test -Dtest=UserServiceTest
-
-# Generate test coverage report
-mvn verify
-```
-
-## 🌐 Deployment
-
-The application is currently deployed on Render.com. Access it at:
-https://kam-lead-management.onrender.com
-
-### Environment Variables for Deployment
-```
-SPRING_PROFILES_ACTIVE=prod
-SPRING_DATASOURCE_URL=your_database_url
-SPRING_DATASOURCE_USERNAME=your_username
-SPRING_DATASOURCE_PASSWORD=your_password
-JWT_SECRET=your_jwt_secret
-```
-
----
-
-
 
 ```mermaid
 erDiagram
@@ -351,4 +379,177 @@ erDiagram
         int days_since_last_order
         timestamp created_at
     }
+```
+
+## 🧪 Testing
+
+The project includes a comprehensive test suite with **~70 tests** covering various components of the application, including edge cases. The test suite ensures high reliability and robustness of the application.
+
+### Key Test Classes
+The test suite is organized into the following classes:
+
+- **CallScheduleTests.java**: Tests for managing call schedules.
+- **ContactTests.java**: Tests for handling contacts.
+- **InteractionTests.java**: Covers various user interactions.
+- **KamLeadManagementApplicationTests.java**: Integration and application context tests.
+- **OrderTests.java**: Tests for managing orders.
+- **PerformanceMetricTests.java**: Tests for performance metrics.
+- **RestaurantTests.java**: Includes edge cases for restaurant management.
+- **RestaurantUserTests.java**: Covers tests related to restaurant-user relationships.
+- **UserTests.java**: Extensive tests for user management, including authentication and authorization.
+
+### Running the Test Suite
+
+You can run the test suite using the following commands:
+
+```bash
+# Run all tests
+mvn test
+
+# Run a specific test class
+mvn test -Dtest=UserTests
+
+# Generate a test coverage report
+mvn verify
+```
+
+## 🌐 Deployment
+
+The application is currently deployed on Render.com. Access it at:
+https://kam-lead-management.onrender.com
+
+
+---
+
+## 🗂️Folder Structure
+
+
+```
+KAM-Lead-Management/
+├── Dockerfile
+├── HELP.md
+├── README.md
+├── pom.xml
+├── .gitignore
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── udaan/
+│   │   │           └── kam/
+│   │   │               └── kam_lead_management/
+│   │   │                   ├── KamLeadManagementApplication.java
+│   │   │                   ├── config/
+│   │   │                   │   └── SwaggerConfig.java
+│   │   │                   ├── controller/
+│   │   │                   │   ├── CallScheduleController.java
+│   │   │                   │   ├── ContactController.java
+│   │   │                   │   ├── InteractionController.java
+│   │   │                   │   ├── OrderController.java
+│   │   │                   │   ├── PerformanceMetricController.java
+│   │   │                   │   ├── RestaurantController.java
+│   │   │                   │   ├── RestaurantUserController.java
+│   │   │                   │   └── UserController.java
+│   │   │                   ├── dto/
+│   │   │                   │   ├── InteractionDTO.java
+│   │   │                   │   ├── RestaurantDTO.java
+│   │   │                   │   ├── RestaurantDetailDTO.java
+│   │   │                   │   ├── UserDTO.java
+│   │   │                   │   └── UserDetailDTO.java
+│   │   │                   ├── entity/
+│   │   │                   │   ├── CallSchedule.java
+│   │   │                   │   ├── Contact.java
+│   │   │                   │   ├── Interaction.java
+│   │   │                   │   ├── Order.java
+│   │   │                   │   ├── PerformanceMetric.java
+│   │   │                   │   ├── Restaurant.java
+│   │   │                   │   ├── RestaurantUser.java
+│   │   │                   │   └── User.java
+│   │   │                   ├── exception/
+│   │   │                   │   ├── BadRequestException.java
+│   │   │                   │   ├── CallScheduleNotFoundException.java
+│   │   │                   │   ├── ContactNotFoundException.java
+│   │   │                   │   ├── DuplicateRelationshipException.java
+│   │   │                   │   ├── ErrorResponse.java
+│   │   │                   │   ├── GlobalExceptionHandler.java
+│   │   │                   │   ├── InteractionNotFoundException.java
+│   │   │                   │   ├── OrderNotFoundException.java
+│   │   │                   │   ├── PerformanceMetricNotFoundException.java
+│   │   │                   │   ├── ResourceNotFoundException.java
+│   │   │                   │   ├── RestaurantNotFoundException.java
+│   │   │                   │   ├── UnauthorizedAccessException.java
+│   │   │                   │   ├── UserNotFoundException.java
+│   │   │                   │   └── ValidationException.java
+│   │   │                   ├── repository/
+│   │   │                   │   ├── CallScheduleRepository.java
+│   │   │                   │   ├── ContactRepository.java
+│   │   │                   │   ├── InteractionRepository.java
+│   │   │                   │   ├── OrderRepository.java
+│   │   │                   │   ├── PerformanceMetricRepository.java
+│   │   │                   │   ├── RestaurantRepository.java
+│   │   │                   │   ├── RestaurantUserRepository.java
+│   │   │                   │   ├── ScheduleRepository.java
+│   │   │                   │   └── UserRepository.java
+│   │   │                   ├── security/
+│   │   │                   │   ├── AuthRequest.java
+│   │   │                   │   ├── AuthResponse.java
+│   │   │                   │   ├── JwtAuthenticationFilter.java
+│   │   │                   │   ├── JwtService.java
+│   │   │                   │   ├── SecurityConfig.java
+│   │   │                   │   ├── UserDetailsImpl.java
+│   │   │                   │   ├── UserDetailsServiceImpl.java
+│   │   │                   │   └── CORSConfigurationSource.java
+│   │   │                   ├── service/
+│   │   │                   │   ├── CallScheduleService.java
+│   │   │                   │   ├── ContactService.java
+│   │   │                   │   ├── InteractionService.java
+│   │   │                   │   ├── OrderService.java
+│   │   │                   │   ├── PerformanceMetricService.java
+│   │   │                   │   ├── RestaurantService.java
+│   │   │                   │   ├── RestaurantUserService.java
+│   │   │                   │   └── UserService.java
+│   │   │                   └── util/
+│   │   │                       ├── DTOConverterUtil.java
+│   │   │                       └── PermissionUtils.java
+│   │   ├── resources/
+│   │   │   ├── application.properties
+│   │   │   ├── schema.sql
+│   │   │   ├── static/
+│   │   │   └── templates/
+│   ├── test/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── udaan/
+│   │   │           └── kam/
+│   │   │               └── kam_lead_management/
+│   │   │                   ├── CallScheduleTests.java
+│   │   │                   ├── ContactTests.java
+│   │   │                   ├── InteractionTests.java
+│   │   │                   ├── KamLeadManagementApplicationTests.java
+│   │   │                   ├── OrderTests.java
+│   │   │                   ├── PerformanceMetricTests.java
+│   │   │                   ├── RestaurantTests.java
+│   │   │                   ├── RestaurantUserTests.java
+│   │   │                   ├── UserTests.java
+│   │   ├── resources/
+├── target/
+│   ├── classes/
+│   ├── generated-sources/
+│   ├── maven-status/
+│   ├── surefire-reports/
+│   └── test-classes/
+├── frontend/
+│   ├── README.md
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── node_modules/
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public/
+│   ├── src/
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   └── vite.config.ts
+└── mvnw
+└── mvnw.cmd
 ```

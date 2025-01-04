@@ -8,6 +8,38 @@
 - [🚀 KAM Lead Management System](#-kam-lead-management-system)
   - [📋 Table of Contents](#-table-of-contents)
   - [🎯 Overview](#-overview)
+  - [📲 Flow of the Application](#-flow-of-the-application)
+    - [Introduction](#introduction)
+    - [System Access Levels](#system-access-levels)
+    - [User Types](#user-types)
+    - [API Documentation](#api-documentation)
+    - [1. Authentication](#1-authentication)
+      - [Login](#login)
+    - [2. Restaurant Management](#2-restaurant-management)
+      - [Create Restaurant (ADMIN only)](#create-restaurant-admin-only)
+      - [Restaurant Endpoints (Admin or assigned Manager)](#restaurant-endpoints-admin-or-assigned-manager)
+    - [3. User Management](#3-user-management)
+      - [Create User (ADMIN only)](#create-user-admin-only)
+      - [User Endpoints (Admin or assigned Manager)](#user-endpoints-admin-or-assigned-manager)
+    - [4. Restaurant-User Assignment](#4-restaurant-user-assignment)
+      - [Assign Restaurant (ADMIN only)](#assign-restaurant-admin-only)
+    - [5. Contact Management](#5-contact-management)
+      - [Contact Endpoints (Admin or assigned Manager)](#contact-endpoints-admin-or-assigned-manager)
+      - [Add Contact](#add-contact)
+    - [6. Interaction Tracking](#6-interaction-tracking)
+      - [Interaction endpoints (Admin or assigned Manager)](#interaction-endpoints-admin-or-assigned-manager)
+      - [Create Interaction](#create-interaction)
+      - [Interaction Endpoints](#interaction-endpoints)
+    - [7. Order Management](#7-order-management)
+      - [Order Endpoints (Admin or assigned Manager)](#order-endpoints-admin-or-assigned-manager)
+      - [Create Order](#create-order)
+      - [Order Endpoints](#order-endpoints)
+    - [8. Call Schedule Management](#8-call-schedule-management)
+      - [Call Schedule Endpoints (Admin or assigned Manager)](#call-schedule-endpoints-admin-or-assigned-manager)
+      - [Create Schedule](#create-schedule)
+    - [9. Performance Metrics](#9-performance-metrics)
+      - [Performance Metrics Endpoints (Admin or assigned Manager)](#performance-metrics-endpoints-admin-or-assigned-manager)
+      - [Add Metrics](#add-metrics)
   - [✨ Features](#-features)
   - [💻 System Requirements](#-system-requirements)
   - [🛠 Tech Stack](#-tech-stack)
@@ -23,7 +55,12 @@
     - [2. Adding a New User/Manager (Admin Only)(Admin Only)](#2-adding-a-new-usermanager-admin-onlyadmin-only)
       - [Request Example](#request-example)
     - [3. Adding a Contact to Restaurant](#3-adding-a-contact-to-restaurant)
-  - [📊 Database Schema](#-database-schema)
+  - [📄 Access Swagger documentation](#-access-swagger-documentation)
+    - [Swagger UI URLs:](#swagger-ui-urls)
+    - [Note: Obtaining the Auth Token](#note-obtaining-the-auth-token)
+      - [Quick Access Credentials:](#quick-access-credentials-1)
+  - [📄 Google docx documentation](#-google-docx-documentation)
+  - [⛁ Database Schema](#-database-schema)
   - [🧪 Testing](#-testing)
     - [Key Test Classes](#key-test-classes)
     - [Running the Test Suite](#running-the-test-suite)
@@ -34,9 +71,187 @@
 
 The KAM Lead Management System is a comprehensive B2B platform designed for Udaan's Key Account Managers (KAMs) to efficiently manage relationships with large restaurant accounts. This system streamlines lead tracking, interaction management, and performance monitoring of restaurant accounts.
 
+## 📲 Flow of the Application
+
+### Introduction
+Udaan, a B2B e-commerce platform, requires a Lead Management System for Key Account Managers (KAMs) who manage relationships with large restaurant accounts. This system will help track and manage leads, interactions, and account performance.
+
+### System Access Levels
+
+### User Types
+* **ADMIN**
+  * Super admin with complete access
+  * Can access all APIs without restriction
+  * Responsible for system management
+
+* **MANAGER**
+  * Limited access based on assignments
+  * Can only access assigned restaurant data
+  * Restricted API access
+
+### API Documentation
+
+### 1. Authentication
+#### Login
+```json
+POST api/auth/login
+{
+    "username": "admin",
+    "password": "admin123"
+}
+```
+* Bearer token must be included in header for all subsequent requests
+
+### 2. Restaurant Management
+#### Create Restaurant (ADMIN only)
+```json
+POST api/restaurant
+{
+    "name": "my restaurnt",
+    "address": "xyz fkdsjkf ",
+    "city": "patna",
+    "phone": "9878456734",
+    "state": "up",
+    "annualRevenue": 344,
+    "leadStatus": "CONTACTED",
+    "email": "borsedhssiffdraj123@gmail.com"
+}
+```
+
+#### Restaurant Endpoints (Admin or assigned Manager)
+* Get Details: `GET /api/restaurant/{restaurant_id}`
+* Update Info: `PUT /restaurants/{restaurant_id}`
+* List All: `GET /api/restaurant`
+* Filter Restaurants: `GET /api/restaurant?leadStatus=NEW&&city=someCity&&search=any_search&&page=1&&size=2`
+
+### 3. User Management
+#### Create User (ADMIN only)
+```json
+POST api/auth/register
+{
+    "username": "newUsername",
+    "email": "user@1234.com",
+    "firstName": "userFname",
+    "lastName": "userLname",
+    "role": "MANAGER",
+    "isActive": true,
+    "password": "user123"
+}
+```
+
+#### User Endpoints (Admin or assigned Manager)
+* List Users: `GET /users`
+* Get User: `GET /users/{user_id}`
+* Update User: `PUT /users/{id}`
+* Delete User: `DELETE /users/{id}`
+* Current User: `GET /users/current`
+
+### 4. Restaurant-User Assignment
+#### Assign Restaurant (ADMIN only)
+```json
+POST api/restaurant-users
+{
+    "restaurant": {
+        "id": 1
+    },
+    "user": {
+        "id": 4
+    },
+    "isActive": true
+}
+```
+
+### 5. Contact Management
+#### Contact Endpoints (Admin or assigned Manager)
+#### Add Contact
+```json
+POST /api/contacts/{restaurant_id}
+{
+    "firstName": "Vivek",
+    "lastName": "Sharma",
+    "role": "chef",
+    "email": "Vivek@1235.com",
+    "phone": 3245789878
+}
+```
+
+* List Contacts: `GET /api/contacts/{restaurant_id}/contacts`
+* Update Contact: `PUT /api/contacts/{restaurant_id}/{contact_id}`
+* Delete Contact: `DELETE /api/contacts/{restaurant_id}/{contact_id}`
+
+### 6. Interaction Tracking
+#### Interaction endpoints (Admin or assigned Manager)
+#### Create Interaction
+```json
+POST /api/interactions/{restaurant_id}?requestingUserId=userId&&contactId=contactId
+{
+    "interactionType": "EMAIL",
+    "interactionDate": "2024-12-30T14:00:00",
+    "notes": "order status",
+    "followUpDate": "2025-01-02T10:00:00"
+}
+```
+
+#### Interaction Endpoints
+* List Interactions: `GET /api/interactions/{restaurant_id}`
+* Update Interaction: `PUT /api/interactions/{restaurant_id}/{interactionId}`
+* Delete Interaction: `DELETE /api/interactions/{restaurant_id}/{interactionId}`
+
+### 7. Order Management
+#### Order Endpoints (Admin or assigned Manager)
+#### Create Order
+```json
+POST /api/orders/{restaurant_id}
+{
+    "totalAmount": "45.62",
+    "status": "DELIVERED",
+    "orderDate": "2025-01-03T16:50:17"
+}
+```
+
+#### Order Endpoints
+* List Orders: `GET /api/orders/{restaurant_id}`
+* Update Order: `PUT /api/orders/{restaurant_id}/{orderId}`
+* Delete Order: `DELETE /api/orders/{restaurant_id}/{orderId}`
+
+### 8. Call Schedule Management
+#### Call Schedule Endpoints (Admin or assigned Manager)
+#### Create Schedule
+```json
+POST /api/call-schedules/{restaurant_id}
+{
+    "frequencyDays": 3,
+    "lastCallDate": "2025-01-01T18:30:00",
+    "nextCallDate": "2025-01-10T18:30:00",
+    "priorityLevel": 1
+}
+```
+
+* Get Schedule: `GET /api/call-schedules/{restaurant_id}`
+* Update Schedule: `PUT /api/call-schedules/{restaurant_id}/{scheduleId}`
+* Delete Schedule: `DELETE /api/call-schedules/{restaurant_id}/{scheduleId}`
+
+### 9. Performance Metrics
+#### Performance Metrics Endpoints (Admin or assigned Manager)
+#### Add Metrics
+```json
+POST /api/performance_metrics/{restaurant_id}
+{
+    "metricDate": "2025-01-01T10:15:00",
+    "leadsCount": 3,
+    "closedDeals": 2,
+    "revenue": 1000.245,
+    "followUpsCount": 435
+}
+```
+
+* Get Metrics: `GET /api/performance_metrics/{restaurant_id}`
+* Update Metrics: `PUT /api/performance_metrics/{restaurant_id}/{metricId}`
+* Delete Metrics: `DELETE /api/performance_metrics/{restaurant_id}/{metricId}`
+
 ## ✨ Features
 
-**🏪 Restaurant Management**
+- **🏪 Restaurant Management**
   - Complete restaurant lifecycle tracking (new → contacted → qualified → negotiating → converted/lost)
   - Advanced filtering and search (status, city, name)
   - Restaurant profile management
@@ -47,8 +262,6 @@ The KAM Lead Management System is a comprehensive B2B platform designed for Udaa
   - Bulk restaurant import/export
   - Automated status transitions
   - Performance metric dashboard
-
-
 
 - **👥 User Management**
   - Role-based access control (Admin/Manager)
@@ -173,9 +386,6 @@ mvn spring-boot:run
 - Local: http://localhost:8080
 - Deployed: https://kam-lead-management.onrender.com
 
-3. Access Swagger documentation
-- Local: http://localhost:8080/swagger-ui/index.html
-- deployed: https://kam-lead-management.onrender.com/swagger-ui/index.html
 
 ## 🔐 Authentication
 
@@ -272,7 +482,49 @@ curl -X POST http://localhost:8080/api/contacts/{restaurant_id} \
 
 and so on....
 
-## 📊 Database Schema
+## 📄 Access Swagger documentation
+
+
+### Swagger UI URLs:
+- **Local Environment**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)  
+- **Deployed Environment**: [https://kam-lead-management.onrender.com/swagger-ui/index.html](https://kam-lead-management.onrender.com/swagger-ui/index.html)  
+
+By clicking the **Authorize** button in Swagger and providing the token, you can test endpoints seamlessly without manually adding the token to each request.
+
+### Note: Obtaining the Auth Token
+
+Before making API requests, you need to obtain an authorization token by logging in as a user or an admin. Follow these steps:
+
+1. **Login to Get Token**:
+   - Use the `/api/auth/login` endpoint to authenticate and retrieve your token.
+   - The token will be required for all API requests.
+   
+   #### Quick Access Credentials:
+   - **Admin Access**  
+     ```json
+     {
+       "username": "admin",
+       "password": "admin123"
+     }
+     ```
+
+   - **Manager Access**  
+     ```json
+     {
+       "username": "dhiraj",
+       "password": "dhiraj"
+     }
+     ```
+
+2. **Using Swagger for API Testing**:
+   - Open the Swagger UI to explore and test the APIs interactively.
+   - Click on the **Authorize** button at the top-right corner of Swagger.
+   - Paste your Bearer token in the dialog box and click **Authorize** to authenticate your session.
+
+## 📄 Google docx documentation
+[Google docx documentation](https://docs.google.com/document/d/134lFCtR_9xPC8DxtG88t_1YOVsIMAfB2kEXO8ieFStA/edit?usp=sharing)
+
+## ⛁ Database Schema
 
 The system uses a relational database with the following core tables:
 - users

@@ -306,7 +306,7 @@ POST /api/performance_metrics/{restaurant_id}
 - Maven 3.8+ or Gradle 7.0+
 - MySQL 8.0+
 - Minimum 4GB RAM
-- 10GB available disk space
+- Node 18 or higher
 
 ## 🛠 Tech Stack
 
@@ -373,6 +373,19 @@ mvn clean install
 ### Database Setup
 The application is pre-configured to use a PostgreSQL database hosted on Render. You don't need to set up a local database, as the configuration is already provided in the `application.properties` file. This ensures seamless integration with the database during development and production.
 
+4. Setting up the frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+1. Change the base URL of backend if you want to local, because the default one is deployed backend ur
+```bash
+go to frontend/constants/baseUrl.ts and change the base url to http://localhost:8080
+```
+
+1. the application is running on http://localhost:5173/
 
 
 ## 🎮 Running the Application

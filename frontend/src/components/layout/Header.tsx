@@ -1,5 +1,5 @@
 import { Layout, Avatar, Dropdown, Tag, Menu } from 'antd';
-import { UserOutlined, LogoutOutlined, ProfileOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useAuth } from '../../store/AuthContext';
 import styles from './header.module.css';
 

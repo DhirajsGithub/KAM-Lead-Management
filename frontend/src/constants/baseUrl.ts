@@ -1,3 +1,3 @@
-const baseUrl :string = 'http://localhost:8080/api';
+const baseUrl :string = 'https://kam-lead-management.onrender.com/api';
 
 export default baseUrl;

@@ -7,7 +7,7 @@
 [https://kam-lead-management.onrender.com](https://kam-lead-management.onrender.com)
 
 
-[Demo video]("https://drive.google.com/file/d/18MlvyIGriNoQV-VzSNDsiTCaQRXHkxmZ/view?usp=sharing")
+[Demo video](https://drive.google.com/file/d/18MlvyIGriNoQV-VzSNDsiTCaQRXHkxmZ/view?usp=sharing)
 
 ## 📋 Table of Contents
 - [🚀 KAM Lead Management System](#-kam-lead-management-system)

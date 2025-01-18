@@ -4,7 +4,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.1-brightgreen.svg)](https://spring.io/projects/spring-boot)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[https://kam-lead-management.onrender.com](https://kam-lead-management.onrender.com)
+[https://kam-lead-management.vercel.app/](https://kam-lead-management.vercel.app/)
 
 
 [Demo video](https://drive.google.com/file/d/18MlvyIGriNoQV-VzSNDsiTCaQRXHkxmZ/view?usp=sharing)
